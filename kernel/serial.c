@@ -85,7 +85,6 @@ int serial_poll(device dev, char *buffer, size_t len)
                     serial_out(dev, &c, 1); // Echo back the backspace
                 }
             }
-                // Handle delete (assuming it deletes the last character)
             else if (c == 0x7F) {
                 if (bytesRead > 0) {
                     bytesRead--;
@@ -95,9 +94,6 @@ int serial_poll(device dev, char *buffer, size_t len)
             }
                 // Handle arrow keys (assuming escape sequences of the form 0x1B 0x5B <Arrow Code>)
             else if (c == 0x1B) {
-                char next1 = inb(dev);
-                char next2 = inb(dev);
-                // For now, we're ignoring arrow keys. If you decide to handle them, this is where you'd do it.
                 continue;
             }
                 // Handle newline or carriage return
