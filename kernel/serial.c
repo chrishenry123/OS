@@ -62,15 +62,55 @@ int serial_out(device dev, const char *buffer, size_t len)
 
 int serial_poll(device dev, char *buffer, size_t len)
 {
-	// insert your code to gather keyboard input via the technique of polling.
-	// You must validate each key and handle special keys such as delete, back space, and
-	// arrow keys
+    if (!buffer || len == 0) {
+        return -1; // Error due to null buffer or zero length
+    }
 
-	// REMOVE THIS -- IT ONLY EXISTS TO AVOID UNUSED PARAMETER WARNINGS
-	// Failure to remove this comment and the following line *will* result in
-	// losing points for inattention to detail
-	(void)dev; (void)buffer;
+    size_t bytesRead = 0;
+    while (bytesRead < len - 1) { // Reserve space for null-termination
+        // Check if data is available
+        if (inb(dev + LSR) & 0x01) {
+            char c = inb(dev);
 
-	// THIS MUST BE CHANGED TO RETURN THE CORRECT VALUE
-	return (int)len;
+            // Handle alphanumeric characters and space
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+                (c >= '0' && c <= '9') || c == ' ') {
+                buffer[bytesRead++] = c;
+                serial_out(dev, &c, 1); // Echo back the character
+            }
+                // Handle backspace
+            else if (c == 0x08) {
+                if (bytesRead > 0) {
+                    bytesRead--;
+                    serial_out(dev, &c, 1); // Echo back the backspace
+                }
+            }
+                // Handle delete (assuming it deletes the last character)
+            else if (c == 0x7F) {
+                if (bytesRead > 0) {
+                    bytesRead--;
+                    char backspace = 0x08;
+                    serial_out(dev, &backspace, 1); // Echo back a backspace
+                }
+            }
+                // Handle arrow keys (assuming escape sequences of the form 0x1B 0x5B <Arrow Code>)
+            else if (c == 0x1B) {
+                char next1 = inb(dev);
+                char next2 = inb(dev);
+                // For now, we're ignoring arrow keys. If you decide to handle them, this is where you'd do it.
+                continue;
+            }
+                // Handle newline or carriage return
+            else if (c == '\n' || c == '\r') {
+                buffer[bytesRead++] = c;
+                serial_out(dev, &c, 1); // Echo back the newline/carriage return
+                break; // Exit loop on newline
+            }
+        }
+    }
+
+    buffer[bytesRead] = '\0'; // Null-terminate the buffer
+    return (int)bytesRead;
 }
+
+
