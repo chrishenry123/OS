@@ -5,7 +5,7 @@
 #include "cmdHandler.h"
 #include <string.h> // for string manipulation functions
 #include <sys_req.h>
-#include "serialpoll.h"
+#include <mpx/serial.h>
 
 
 #define COM1 0x3F8
@@ -31,12 +31,15 @@ static void process_command(const char *command) {
 
 
 void comhand(void) {
+    char buf[101] = {0};
+
     // Initial welcome message
     char welcome_msg[] = "Welcome to MPX. Please select an option.\n1) Help\n2) Set Time\n3) Get Time\nEnter choice: ";
-    sys_req(WRITE, COM1, welcome_msg, strlen(welcome_msg));  // Show the welcome message once
-    char buf[101] = {0};
+    sys_req(WRITE, COM1, welcome_msg, strlen(welcome_msg));
+
     // Main loop
     for (;;) {
+        memset(buf, 0, sizeof(buf));  // Zero out the buffer
         // Read from the serial port using serial_poll
         int nread = serial_poll(COM1, buf, sizeof(buf) - 1);
         // Null-terminate the string to be safe
@@ -46,8 +49,10 @@ void comhand(void) {
             // Handle error condition if needed
             continue;
         }
-        // Echo the input using sys_req
-        sys_req(WRITE, COM1, buf, nread);
+        // Strip newline or carriage return if necessary
+        if (buf[nread - 1] == '\n' || buf[nread - 1] == '\r') {
+            buf[nread - 1] = '\0';
+        }
         // Check if the user wants to shut down
         if (strcmp(buf, "shutdown") == 0) {
             char confirm_msg[] = "Are you sure you want to shut down? (y/n): ";
@@ -65,5 +70,6 @@ void comhand(void) {
         sys_req(WRITE, COM1, welcome_msg, strlen(welcome_msg));
     }
 }
+
 
 

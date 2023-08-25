@@ -70,6 +70,7 @@ int serial_poll(device dev, char *buffer, size_t len)
     while (bytesRead < len - 1) { // Reserve space for null-termination
         // Check if data is available
         if (inb(dev + LSR) & 0x01) {
+
             char c = inb(dev);
 
             // Handle alphanumeric characters and space
