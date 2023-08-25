@@ -9,7 +9,6 @@ all: kernel.bin
 include make/kernel.mk
 include make/lib.mk
 include make/user.mk
-include make/cmdhandler.mk
 
 AS	= nasm
 ASFLAGS = -f elf -g
@@ -24,7 +23,7 @@ LD      = i686-linux-gnu-ld
 endif
 LDFLAGS = @make/LDFLAGS
 
-OBJFILES = $(KERNEL_OBJECTS) $(LIB_OBJECTS) $(USER_OBJECTS) $(CMDHANDLER_OBJECTS)
+OBJFILES = $(KERNEL_OBJECTS) $(LIB_OBJECTS) $(USER_OBJECTS)
 
 kernel.bin: $(OBJFILES)
 	$(LD) $(LDFLAGS) -o $@ $(OBJFILES)

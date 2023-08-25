@@ -5,12 +5,12 @@
 #include "cmdHandler.h"
 #include <string.h> // for string manipulation functions
 #include <sys_req.h>
+#include "serialpoll.h"
 
 
 #define COM1 0x3F8
 
 
-// Define other necessary constants, macros, and internal helper functions.
 
 // A helper function to process the user's command choice.
 static void process_command(const char *command) {
@@ -29,30 +29,41 @@ static void process_command(const char *command) {
     }
 }
 
+
 void comhand(void) {
-    sys_req(WRITE, COM1, "Welcome to MPX. Please select an option.\n1) Help\n2) Set Time\n3) Get Time\nEnter choice: ", strlen("Welcome to MPX. Please select an option.\n1) Help\n2) Set Time\n3) Get Time\nEnter choice: "));
-
+    // Initial welcome message
+    char welcome_msg[] = "Welcome to MPX. Please select an option.\n1) Help\n2) Set Time\n3) Get Time\nEnter choice: ";
+    sys_req(WRITE, COM1, welcome_msg, strlen(welcome_msg));  // Show the welcome message once
+    char buf[101] = {0};
+    // Main loop
     for (;;) {
-        char buf[100] = {0};
-        int nread = sys_req(READ, COM1, buf, sizeof(buf));
-
-        // Echo the input back to the user for clarity
+        // Read from the serial port using serial_poll
+        int nread = serial_poll(COM1, buf, sizeof(buf) - 1);
+        // Null-terminate the string to be safe
+        if (nread >= 0) {
+            buf[nread] = '\0';
+        } else {
+            // Handle error condition if needed
+            continue;
+        }
+        // Echo the input using sys_req
         sys_req(WRITE, COM1, buf, nread);
-
-        // Check if the user wants to shut down.
+        // Check if the user wants to shut down
         if (strcmp(buf, "shutdown") == 0) {
-            sys_req(WRITE, COM1, "Are you sure you want to shut down? (y/n): ", strlen("Are you sure you want to shut down? (y/n): "));
+            char confirm_msg[] = "Are you sure you want to shut down? (y/n): ";
+            sys_req(WRITE, COM1, confirm_msg, strlen(confirm_msg));
             char confirm[5] = {0};
             sys_req(READ, COM1, confirm, sizeof(confirm));
             if (strcmp(confirm, "y") == 0) {
-                // Implement the shutdown process.
+                // Shut down and break out of the loop
                 return;
             }
         } else {
             process_command(buf);
         }
-
-        // Display the menu again for the next command
-        sys_req(WRITE, COM1, "\nWelcome to MPX. Please select an option.\n1) Help\n2) Set Time\n3) Get Time\nEnter choice: ", strlen("\nWelcome to MPX. Please select an option.\n1) Help\n2) Set Time\n3) Get Time\nEnter choice: "));
+        // Show the menu again using sys_req
+        sys_req(WRITE, COM1, welcome_msg, strlen(welcome_msg));
     }
 }
+
+
