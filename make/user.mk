@@ -5,4 +5,6 @@ user/core.o: user/core.c include/string.h include/mpx/serial.h \
 
 USER_OBJECTS=\
 	user/core.o \
-	user/cmdHandler.o
+	user/cmdHandler.o \
+	user/help.o \
+	user/version.o

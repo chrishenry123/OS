@@ -3,6 +3,7 @@
 //
 //./mpx.sh
 #include "cmdHandler.h"
+#include "version.h"
 #include <string.h> // for string manipulation functions
 #include <sys_req.h>
 #include <mpx/serial.h>
