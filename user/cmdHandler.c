@@ -27,6 +27,10 @@ static void process_command(const char *command) {
     } else if (strcmp(command, "3") == 0) {
         // Get the Time
         sys_req(WRITE, COM1, "Current Time: XX:XX:XX\n", strlen("Current Time: XX:XX:XX\n"));
+    } else if (strcmp(command, "4") == 0) {
+	// Show the version
+	sys_req(WRITE, COM1, "Displaying Version...\n", strlen("Displaying Version...\n"));
+	version();
     } else {
         sys_req(WRITE, COM1, "Invalid command. Please try again.\n", strlen("Invalid command. Please try again.\n"));
     }
@@ -43,7 +47,8 @@ void rtrim(char *str) {
 void comhand(void) {
     char buf[101] = {0};
 
-    char welcome_msg[] = "Welcome to MPX. Please select an option.\n1) Help\n2) Set Time\n3) Get Time\nEnter choice: ";
+    // Initial welcome message
+    char welcome_msg[] = "Welcome to MPX. Please select an option.\n1) Help\n2) Set Time\n3) Get Time\n4) Version\nEnter choice: ";
     sys_req(WRITE, COM1, welcome_msg, strlen(welcome_msg));
 
     for (;;) {
