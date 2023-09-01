@@ -20,7 +20,7 @@ void help() {
 	sys_req(WRITE, COM1, version_name, strlen(version_name));
 
 	// String for the description of version command
-	char version_description[] = "Description\n\tThis command holds the main purpose of displaying the current working version of the MPX compiler. The current version is expressed in the form of R#.? where # stands for the current module being worked on and ? stands for the numbered update to the development branch. For example version R3.2 would represent module 3 being currently worked on, and the second major commit to the Development branch.\n\n";
+	char version_description[] = "Description\n\tThis command holds the main purpose of displaying the current working version of the MPX compiler.\n\tThe current version is expressed in the form of R#.? where # stands for the current module being worked on\n\tand ? stands for the numbered update to the development branch. For example version R3.2 would represent\n\tmodule 3 being currently worked on, and the second major commit to the Development branch.\n\n";
 
 	// Outputting the Description for the version command
 	sys_req(WRITE, COM1, version_description, strlen(version_description));
@@ -32,7 +32,7 @@ void help() {
 	sys_req(WRITE, COM1, shutdown_name, strlen(shutdown_name));
 
 	// String for description of shutdown command
-	char shutdown_description[] = "Description\n\tThis command will halt all processes currently running within the operating system followed by the operating system itself shutting down\n\n";
+	char shutdown_description[] = "Description\n\tThis command will halt all processes currently running within the operating system followed by the\n\toperating system itself shutting down\n\n";
 
 	// Outputs the description for shutdown command
 	sys_req(WRITE, COM1, shutdown_description, strlen(shutdown_description));
@@ -50,7 +50,7 @@ void help() {
 	sys_req(WRITE, COM1, settime_args, strlen(settime_args));
 
 	// String for the description of settime command
-	char settime_description[] = "Description\n\tThis command will allow the user to input a time (date?) that will change the current clock within the MPX operating system.\n\n";
+	char settime_description[] = "Description\n\tThis command will allow the user to input a time (date?) that will change the current clock within the\n\tMPX operating system.\n\n";
 
 	// Outputs the description of settime command
 	sys_req(WRITE, COM1, settime_description, strlen(settime_description));
