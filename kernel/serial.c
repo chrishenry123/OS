@@ -60,54 +60,76 @@ int serial_out(device dev, const char *buffer, size_t len)
 	return (int)len;
 }
 
-int serial_poll(device dev, char *buffer, size_t len)
-{
+int serial_poll(device dev, char *buffer, size_t len) {
     if (!buffer || len == 0) {
-        return -1; // Error due to null buffer or zero length
+        return -1; // Invalid input
     }
 
     size_t bytesRead = 0;
-    while (bytesRead < len - 1) { // Reserve space for null-termination
-        // Check if data is available
-        if (inb(dev + LSR) & 0x01) {
+    size_t cursorPos = 0;
+    int is_escape_seq = 0;
 
+    while (bytesRead < len - 1) {
+        if (inb(dev + LSR) & 0x01) {
             char c = inb(dev);
 
-            // Handle alphanumeric characters and space
+            // Handling escape sequences
+            if (is_escape_seq) {
+                if (c == '[' || is_escape_seq == 2) {
+                    is_escape_seq = (c == '[') ? is_escape_seq + 1 : 0;
+                    continue;
+                }
+            }
+
+            // Handling alphanumeric and space characters
             if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
                 (c >= '0' && c <= '9') || c == ' ') {
-                buffer[bytesRead++] = c;
-                serial_out(dev, &c, 1); // Echo back the character
+                for (size_t i = bytesRead; i > cursorPos; i--) {
+                    buffer[i] = buffer[i - 1];
+                }
+                buffer[cursorPos] = c;
+                serial_out(dev, &c, 1);
+                cursorPos++;
+                bytesRead++;
             }
-                // Handle backspace
-            else if (c == 0x08) {
-                if (bytesRead > 0) {
+
+                // Handling backspace
+            else if (c == 0x08 || c == 0x7F) {
+                if (cursorPos > 0) {
+                    for (size_t i = cursorPos; i < bytesRead; i++) {
+                        buffer[i - 1] = buffer[i];
+                    }
                     bytesRead--;
-                    serial_out(dev, &c, 1); // Echo back the backspace
+                    cursorPos--;
+                    char backspaceSequence[] = {0x1B, '[', 'D', ' ', 0x1B, '[', 'D'};
+                    serial_out(dev, backspaceSequence, 7);
                 }
             }
-            else if (c == 0x7F) {
-                if (bytesRead > 0) {
-                    bytesRead--;
-                    char backspace = 0x08;
-                    serial_out(dev, &backspace, 1); // Echo back a backspace
-                }
-            }
-                // Handle arrow keys (assuming escape sequences of the form 0x1B 0x5B <Arrow Code>)
+
+                // Starting escape sequence
             else if (c == 0x1B) {
-                continue;
+                is_escape_seq = 1;
             }
-                // Handle newline or carriage return
+
+                // Handling newline or carriage return
             else if (c == '\n' || c == '\r') {
                 buffer[bytesRead++] = c;
-                serial_out(dev, &c, 1); // Echo back the newline/carriage return
-                break; // Exit loop on newline
+                serial_out(dev, &c, 1);
+                break;
             }
         }
     }
 
-    buffer[bytesRead] = '\0'; // Null-terminate the buffer
-    return (int)bytesRead;
+    buffer[bytesRead] = '\0';
+    return (int) bytesRead;
 }
+
+
+
+
+
+
+
+
 
 

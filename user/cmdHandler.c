@@ -36,6 +36,13 @@ static void process_command(const char *command) {
     }
 }
 
+// Function to remove trailing whitespace from a string
+void rtrim(char *str) {
+    int n = strlen(str) - 1;
+    while (n >= 0 && (str[n] == ' ' || str[n] == '\t' || str[n] == '\n' || str[n] == '\r')) {
+        str[n--] = '\0';
+    }
+}
 
 void comhand(void) {
     char buf[101] = {0};
@@ -44,36 +51,44 @@ void comhand(void) {
     char welcome_msg[] = "Welcome to MPX. Please select an option.\n1) Help\n2) Set Time\n3) Get Time\n4) Version\nEnter choice: ";
     sys_req(WRITE, COM1, welcome_msg, strlen(welcome_msg));
 
-    // Main loop
     for (;;) {
-        memset(buf, 0, sizeof(buf));  // Zero out the buffer
-        // Read from the serial port using serial_poll
+        memset(buf, 0, sizeof(buf));
         int nread = serial_poll(COM1, buf, sizeof(buf) - 1);
-        // Null-terminate the string to be safe
+
         if (nread >= 0) {
             buf[nread] = '\0';
         } else {
-            // Handle error condition if needed
             continue;
         }
-        // Strip newline or carriage return if necessary
+
+        // Remove newline or carriage return
         if (buf[nread - 1] == '\n' || buf[nread - 1] == '\r') {
             buf[nread - 1] = '\0';
         }
-        // Check if the user wants to shut down
+
+        // Remove trailing spaces
+        rtrim(buf);
+
+        // Now process the command
         if (strcmp(buf, "shutdown") == 0) {
             char confirm_msg[] = "Are you sure you want to shut down? (y/n): ";
             sys_req(WRITE, COM1, confirm_msg, strlen(confirm_msg));
+
             char confirm[5] = {0};
-            sys_req(READ, COM1, confirm, sizeof(confirm));
+            sys_req(READ, COM1, confirm, sizeof(confirm) - 1);
+            confirm[4] = '\0';
+
+            int confirmRead = strlen(confirm);
+            if (confirm[confirmRead - 1] == '\n' || confirm[confirmRead - 1] == '\r') {
+                confirm[confirmRead - 1] = '\0';
+            }
             if (strcmp(confirm, "y") == 0) {
-                // Shut down and break out of the loop
                 return;
             }
         } else {
             process_command(buf);
         }
-        // Show the menu again using sys_req
+
         sys_req(WRITE, COM1, welcome_msg, strlen(welcome_msg));
     }
 }

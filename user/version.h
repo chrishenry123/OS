@@ -1,3 +1,3 @@
 #include <string.h>
 
-void version();
+void version(void);
