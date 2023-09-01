@@ -18,7 +18,6 @@ static void process_command(const char *command) {
     if (strcmp(command, "1") == 0) {
         // Call the Help function
         sys_req(WRITE, COM1, "Help: Displaying available commands...\n", strlen("Help: Displaying available commands...\n"));
-	help();
     } else if (strcmp(command, "2") == 0) {
         // Set the Time
         sys_req(WRITE, COM1, "Setting Time...\n", strlen("Setting Time...\n"));
