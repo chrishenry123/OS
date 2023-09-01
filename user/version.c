@@ -1,6 +1,10 @@
 // This file will be for showing the current version, and date.
 // Created by David Clark on 8/25/23
 
+#include "version.h"
+#include <string.h>
+#include <sys_req.h>
+
 void version(void) {
 	// Char array to update for each version of MPX
 	// Style will be in R#.? where # is the current module being worked on and ? starts at 1 and goes up by one for each

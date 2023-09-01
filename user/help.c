@@ -1,3 +1,8 @@
+#include "help.h"
+#include <sys_req.h>
+#include <string.h>
+
+
 // This file will be for the help command, listing out each of the commands Name, Synopsis and Description.
 // Created by David Clark on 8/25/23
 
@@ -41,7 +46,12 @@ void help() {
 	// String for arguments of settime command
 	char settime_args[] = "Arguments\n\tArguments - MM-DD-YR HR:MM:SS\n";
 
+	// Outputs the args for settime command
+	sys_req(WRITE, COM1, settime_args, strlen(settime_args));
+
 	// String for the description of settime command
 	char settime_description[] = "Description\n\tThis command will allow the user to input a time (date?) that will change the current clock within the MPX operating system.\n\n";
 
-	// String for 
+	// Outputs the description of settime command
+	sys_req(WRITE, COM1, settime_description, strlen(settime_description));
+}
