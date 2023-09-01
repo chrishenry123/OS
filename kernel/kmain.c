@@ -101,6 +101,7 @@ void kmain(void)
     // is necessary.
     klogv(COM1, "Starting system shutdown procedure...");
 
+
     // 11) Halt CPU -- *no headers necessary, no changes necessary*
     // Execution of kmain() will complete and return to where it was called
     // in boot.s, which will then attempt to power off Qemu or halt the CPU.

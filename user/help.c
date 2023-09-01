@@ -6,7 +6,7 @@
 // This file will be for the help command, listing out each of the commands Name, Synopsis and Description.
 // Created by David Clark on 8/25/23
 
-void help() {
+void help(void) {
 
 	char first_line[] = "MPX Project Help Page\n\n";
 
