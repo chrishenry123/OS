@@ -5,6 +5,7 @@
 #include "cmdHandler.h"
 #include "version.h"
 #include "help.h"
+#include "time.h"
 #include <string.h> // for string manipulation functions
 #include <sys_req.h>
 #include <mpx/serial.h>
@@ -28,6 +29,14 @@ static void process_command(const char *command) {
         // Get the Time
         sys_req(WRITE, COM1, "Current Time: XX:XX:XX\n", strlen("Current Time: XX:XX:XX\n"));
     } else if (strcmp(command, "4") == 0) {
+	// Set the date
+	sys_req(WRITE, COM1, "Setting Date...\n", strlen("Setting Date...\n"));
+
+    } else if (strcmp(command, "5") == 0) {
+	// Get the date
+	sys_req(WRITE, COM1, "Getting Date...\n", strlen("Getting Date...\n"));
+	getDate();
+    } else if (strcmp(command, "6") == 0) {
 	// Show the version
 	sys_req(WRITE, COM1, "Displaying Version...\n", strlen("Displaying Version...\n"));
 	version();
@@ -48,7 +57,7 @@ void comhand(void) {
     char buf[101] = {0};
 
     // Initial welcome message
-    char welcome_msg[] = "Welcome to MPX. Please select an option.\n1) Help\n2) Set Time\n3) Get Time\n4) Version\nEnter choice: ";
+    char welcome_msg[] = "Welcome to MPX. Please select an option.\n1) Help\n2) Set Time\n3) Get Time\n4) Set Date\n5) Get Date\n6) Version\nEnter choice: ";
     sys_req(WRITE, COM1, welcome_msg, strlen(welcome_msg));
 
     for (;;) {
