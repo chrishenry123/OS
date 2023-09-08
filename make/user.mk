@@ -7,4 +7,5 @@ USER_OBJECTS=\
 	user/core.o \
 	user/cmdHandler.o \
 	user/help.o \
-	user/version.o
+	user/version.o \
+	user/time.o
