@@ -72,57 +72,83 @@ int serial_poll(device dev, char *buffer, size_t len) {
     while (bytesRead < len - 1) {
         if (inb(dev + LSR) & 0x01) {
             char c = inb(dev);
-
-            // Handling escape sequences
             if (is_escape_seq) {
-                if (c == '[' || is_escape_seq == 2) {
-                    is_escape_seq = (c == '[') ? is_escape_seq + 1 : 0;
-                    continue;
+                if (c == '[') {
+                    is_escape_seq++;
+                } else if (is_escape_seq == 2) {
+                    if (c == 'D' && cursorPos > 0) { // Left Arrow
+                        cursorPos--;
+                        char moveLeft[] = {0x1B, '[', 'D'};
+                        serial_out(dev, moveLeft, 3);
+                    } else if (c == 'C' && cursorPos < bytesRead) { // Right Arrow
+                        cursorPos++;
+                        char moveRight[] = {0x1B, '[', 'C'};
+                        serial_out(dev, moveRight, 3);
+                    }
+                    is_escape_seq = 0;
                 }
+                continue;
             }
-
-            // Handling alphanumeric and space characters
             if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
                 (c >= '0' && c <= '9') || c == ' ') {
+                // Insert the new character
                 for (size_t i = bytesRead; i > cursorPos; i--) {
                     buffer[i] = buffer[i - 1];
                 }
                 buffer[cursorPos] = c;
-                serial_out(dev, &c, 1);
                 cursorPos++;
                 bytesRead++;
-            }
-
-                // Handling backspace
-            else if (c == 0x08 || c == 0x7F) {
+                serial_out(dev, &c, 1);
+            } else if (c == 0x08 || c == 0x7F) { // Backspace or Delete
                 if (cursorPos > 0) {
+                    // Remove the character from the buffer
                     for (size_t i = cursorPos; i < bytesRead; i++) {
                         buffer[i - 1] = buffer[i];
                     }
-                    bytesRead--;
                     cursorPos--;
-                    char backspaceSequence[] = {0x1B, '[', 'D', ' ', 0x1B, '[', 'D'};
-                    serial_out(dev, backspaceSequence, 7);
+                    bytesRead--;
+                    // Explicitly null-terminate the updated buffer
+                    buffer[bytesRead] = '\0';
+                    // Clear from cursor to end of line
+                    char moveLeft[] = {0x1B, '[', 'D'};
+                    char clearLine[] = {0x1B, '[', 'K'};
+                    serial_out(dev, moveLeft, 3);
+                    serial_out(dev, clearLine, 3);
+
+                    // Redraw the line after cursor
+                    for (size_t i = cursorPos; i < bytesRead; i++) {
+                        serial_out(dev, &buffer[i], 1);
+                    }
+                    // Add a space at the end to overwrite any stray character
+                    char space = ' ';
+                    serial_out(dev, &space, 1);
+                    // Move cursor back to original position + 1 (to cover the added space)
+                    for (size_t i = bytesRead + 1; i > cursorPos; i--) {
+                        serial_out(dev, moveLeft, 3);
+                    }
                 }
-            }
-
-                // Starting escape sequence
-            else if (c == 0x1B) {
+            } else if (c == 0x1B) { // Start of an Escape Sequence
                 is_escape_seq = 1;
-            }
-
-                // Handling newline or carriage return
-            else if (c == '\n' || c == '\r') {
-                buffer[bytesRead++] = c;
+            } else if (c == '\n' || c == '\r') { // New Line or Carriage Return
+                buffer[bytesRead] = c;
+                bytesRead++;
                 serial_out(dev, &c, 1);
                 break;
             }
         }
     }
-
     buffer[bytesRead] = '\0';
     return (int) bytesRead;
 }
+
+
+
+
+
+
+
+
+
 
 
 
