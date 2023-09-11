@@ -24,7 +24,7 @@ static void process_command(const char *command) {
     } else if (strcmp(command, "2") == 0) {
         // Set the Time
         sys_req(WRITE, COM1, "Setting Time...\n", strlen("Setting Time...\n"));
-        // Add your time-setting logic here.
+        setTime();
     } else if (strcmp(command, "3") == 0) {
         // Get the Time
         sys_req(WRITE, COM1, "Current Time is...\n", strlen("Current Time is...\n"));
