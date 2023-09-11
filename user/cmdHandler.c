@@ -27,11 +27,12 @@ static void process_command(const char *command) {
         // Add your time-setting logic here.
     } else if (strcmp(command, "3") == 0) {
         // Get the Time
-        sys_req(WRITE, COM1, "Current Time: XX:XX:XX\n", strlen("Current Time: XX:XX:XX\n"));
+        sys_req(WRITE, COM1, "Current Time is...\n", strlen("Current Time is...\n"));
+	get_time();
     } else if (strcmp(command, "4") == 0) {
 	// Set the date
 	sys_req(WRITE, COM1, "Setting Date...\n", strlen("Setting Date...\n"));
-
+	setDate();
     } else if (strcmp(command, "5") == 0) {
 	// Get the date
 	sys_req(WRITE, COM1, "Getting Date...\n", strlen("Getting Date...\n"));
