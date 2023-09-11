@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MPX OS - Programmer's Manual</title>
+    <link rel="stylesheet" type="text/css" href="manual.css">
+</head>
+<body>
+<div class="header">
+    <h1>MPX Operating System</h1>
+    <h2>Programmer's Manual</h2>
+</div>
+
+<div class="container">
+    <div class="sidebar">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#command-handler">Command Handler</a></li>
+            <li><a href="#serial-poller">Serial Poller</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <!-- Introduction -->
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>This manual provides detailed documentation of the MPX Operating System, aiming to aid developers in understanding, maintaining, and extending the system.</p>
+        </section>
+
+        <!-- Command Handler -->
+        <section id="command-handler">
+            <h2>Command Handler</h2>
+            <h3>Functions</h3>
+            <dl>
+                <dt>void comhand(void)</dt>
+                <dd>Main loop for the command-line interface. Initializes the user interface and waits for user input to process commands. Does not take any parameters.</dd>
+
+                <dt>static void process_command(const char *command)</dt>
+                <dd>Accepts a command from the user, given as a string, and invokes the appropriate function to handle that command. The function does not return any values.</dd>
+
+                <dt>void rtrim(char *str)</dt>
+                <dd>Removes trailing white spaces from the input string. Takes a pointer to a character array as its parameter and modifies the array in-place. Does not return any value.</dd>
+            </dl>
+            <h3>Data Types</h3>
+            <p>No custom data types are used.</p>
+        </section>
+
+        <!-- Serial Poller -->
+        <section id="serial-poller">
+            <h2>Serial Poller</h2>
+            <h3>Functions</h3>
+            <dl>
+                <dt>int serial_poll(device dev, char *buffer, size_t len)</dt>
+                <dd>Reads from the serial device into a buffer of specified length. Returns the number of bytes read on success, and -1 on failure. Parameters include device ID, buffer to read into, and length of the buffer.</dd>
+            </dl>
+            <h3>Data Types</h3>
+            <dl>
+                <dt>typedef int device</dt>
+                <dd>An integer type that represents the device ID, such as COM1.</dd>
+
+                <dt>size_t</dt>
+                <dd>Standard C library type that represents the size of objects in bytes.</dd>
+            </dl>
+        </section>
+    </div>
+</div>
+
+<div class="footer">
+    <p>For additional questions, please refer to the source code or contact the development team.</p>
+</div>
+</body>
+</html>
