@@ -88,6 +88,74 @@ void get_time() {
 
 }
 
+void setTime(void){
+    int hours;
+    int mins;
+    int secs;
+
+    // getting the hours
+    char hourMessage[] = "Please enter the hours. \n";
+    sys_req(WRITE, COM1, hourMessage, strlen(hourMessage));
+
+    char userHour[10] = {0};
+    int nread = sys_req(READ, COM1, userHour, sizeof(userHour));
+    sys_req(WRITE, COM1, userHour, nread);
+
+    // Getting the mins
+    char dayMins[] = "Please enter the Mins.  \n";
+    sys_req(WRITE, COM1, dayMins, strlen(dayMins));
+
+    char userMin[10] = {0};
+    nread = sys_req(READ, COM1, userMin, sizeof(userMin));
+    sys_req(WRITE, COM1, userMin, nread);
+
+
+    // Getting the secs
+    char secMessage[] = "Please enter the seconds. \n";
+    sys_req(WRITE, COM1, secMessage, strlen(secMessage));
+
+    char userSec[10] = {0};
+    nread = sys_req(READ, COM1, userSec, sizeof(userSec));
+    sys_req(WRITE, COM1, userSec, nread);
+
+    hours = atoi(userHour);
+    mins = atoi(userMin);
+    secs = atoi(userSec);
+
+    if(secs < 0 || secs > 59) {
+    	char secsError[] = "Error: Seconds is out of the range 00 - 59\n\n";
+	sys_req(WRITE, COM1, secsError, strlen(secsError));
+	return;
+    }
+    
+    if(mins < 0 || mins > 59) {
+    	char minsError[] = "Error: Minutes is out of the range 00 - 59\n\n";
+	sys_req(WRITE, COM1, minsError, strlen(minsError));
+	return;
+    }
+    
+    if(hours < 0 || hours > 23) {
+    	char hourError[] = "Error: Hours is out of the range 00 - 23\n\n";
+	sys_req(WRITE, COM1, hourError, strlen(hourError));
+	return;
+    }
+
+    // Writing the the clock (BCD conversion)
+    outb(RTC_INDEX_PORT, RTC_HOURS_REG);
+    outb(RTC_DATA_PORT, (((hours / 10) << 4) | (hours % 10)));
+
+    outb(RTC_INDEX_PORT, RTC_MINUTES_REG);
+    outb(RTC_DATA_PORT, (((mins / 10) << 4) | (mins % 10)));
+
+    outb(RTC_INDEX_PORT, RTC_SECONDS_REG);
+    outb(RTC_DATA_PORT, (((secs / 10) << 4) | (secs % 10)));
+
+    char finaltimeMessage[] = "New time set to: ";
+    sys_req(WRITE, COM1, finaltimeMessage, strlen(finaltimeMessage));
+    get_time();
+
+}
+
 void getDate(void){
 
 	// Defining the variables for day, month and year
