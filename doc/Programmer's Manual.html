@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MPX OS - Programmer's Manual</title>
+    <link rel="stylesheet" type="text/css" href="manual.css">
+</head>
+<body>
+<div class="header">
+    <h1>MPX Operating System</h1>
+    <h2>Programmer's Manual</h2>
+</div>
+
+<div class="container">
+    <div class="sidebar">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#command-handler">Command Handler</a></li>
+            <li><a href="#serial-poller">Serial Poller</a></li>
+            <li><a href="#help">Help</a></li>
+            <li><a href="#version">Version</a></li>
+            <li><a href="#time">Time</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <!-- Introduction -->
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>This manual provides detailed documentation of the MPX Operating System, aiming to aid developers in understanding, maintaining, and extending the system.</p>
+        </section>
+
+        <!-- Command Handler -->
+        <section id="command-handler">
+            <h2>Command Handler</h2>
+            <h3>Functions</h3>
+            <dl>
+                <dt>void comhand(void)</dt>
+                <dd>Main loop for the command-line interface. Initializes the user interface and waits for user input to process commands. Does not take any parameters.</dd>
+
+                <dt>static void process_command(const char *command)</dt>
+                <dd>Accepts a command from the user, given as a string, and invokes the appropriate function to handle that command. The function does not return any values.</dd>
+
+                <dt>void rtrim(char *str)</dt>
+                <dd>Removes trailing white spaces from the input string. Takes a pointer to a character array as its parameter and modifies the array in-place. Does not return any value.</dd>
+            </dl>
+            <h3>Data Types</h3>
+            <p>No custom data types are used.</p>
+        </section>
+
+        <!-- Serial Poller -->
+        <section id="serial-poller">
+            <h2>Serial Poller</h2>
+            <h3>Functions</h3>
+            <dl>
+                <dt>int serial_poll(device dev, char *buffer, size_t len)</dt>
+                <dd>Reads from the serial device into a buffer of specified length. Returns the number of bytes read on success, and -1 on failure. Parameters include device ID, buffer to read into, and length of the buffer.</dd>
+            </dl>
+            <h3>Data Types</h3>
+            <dl>
+                <dt>typedef int device</dt>
+                <dd>An integer type that represents the device ID, such as COM1.</dd>
+
+                <dt>size_t</dt>
+                <dd>Standard C library type that represents the size of objects in bytes.</dd>
+            </dl>
+        </section>
+        
+        <!-- Help -->
+        <section id="help">
+            <h2>Help</h2>
+            <h3>Functions</h3>
+            <dl>
+                <dt>void help(void)</dt>
+                <dd>Displays each of the functions that a user can call and provides a name, the arguments and a description for each function. Takes in no parameters and returns no parameters is just used to display a help message to the screen</dd>
+            </dl>
+            <h3>Data Types</h3>
+            <p>No custom data types are used.</p>
+        </section>
+        
+        <!-- Version -->
+        <section id="version">
+            <h2>Version</h2>
+            <h3>Functions</h3>
+            <dl>
+                <dt>void version(void)</dt>
+                <dd>Displays the current working version of the MPX compiler. The current version is expressed in the form of R#.? where # stands for the current module being worked on and ? stands for the numbered update to the development branch. For example version R3.2 would represent module 3 being currently worked on, and the second major commit to the Development branch.</dd>
+            </dl>
+            <h3>Data Types</h3>
+            <p>No custom data types are used.</p>
+        </section>
+        
+        <!-- Time -->
+        <section id="time">
+            <h2>Time</h2>
+            <h3>Functions</h3>
+            <dl>
+                <dt>void get_time(void)</dt>
+                <dd>Will get the current time on the operating system and display it to the user. Does not take any parameters or return any values.</dd>
+
+                <dt>void getDate(void)</dt>
+                <dd>Will get the current date on the operating system and display it to the user. Does not take any parameters or return any values.</dd>
+
+                <dt>void setTime(void)</dt>
+                <dd>Takes in three different user inputs, one to represent the hours, one to represent the minutes and one to represent the seconds. The user will recieve three different prompts for each of the three inputs. Afterwards the operating systems clock is updated to reflect the new time that was passed in by the user and that new time is displayed to the user. Does not take any parameters or return any values.</dd>
+                
+                <dt>void setDate(void)</dt>
+                <dd>Takes in three different user inputs, one to represent the month, one to represent the day and one to represent the year. The user will recieve three different prompts for each of the three inputs. Afterwards the operating systems clock is updated to reflect the new date that was passed in by the user and that new date is displayed to the user. Does not take any parameters or return any values.</dd>
+                
+                <dt>void reverse(char str[], int length)</dt>
+                <dd>Takes in two parameters, one for the string to be flipped and one that stores the length of the string. This is a helper method that serves the purpose of flipping a string around in reverse order based on the character. This method doesn't return any values.</dd>
+                
+                <dt>char* itoa(int num, char* str, int base)</dt>
+                <dd>Takes in three parameters, one for the number to be converted, one for the string where the integer is saved to and one for the base of the number that is passed in (Ex. base 10 is standard). This method works by going through and converting an integer to to a string and then returning that integer as a string pointer back to wherever called this method.</dd>
+            </dl>
+            <h3>Data Types</h3>
+            <p>No custom data types are used.</p>
+        </section>
+    </div>
+</div>
+
+<div class="footer">
+    <p>For additional questions, please refer to the source code or contact the development team.</p>
+</div>
+</body>
+</html>

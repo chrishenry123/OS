@@ -60,17 +60,102 @@ int serial_out(device dev, const char *buffer, size_t len)
 	return (int)len;
 }
 
-int serial_poll(device dev, char *buffer, size_t len)
-{
-	// insert your code to gather keyboard input via the technique of polling.
-	// You must validate each key and handle special keys such as delete, back space, and
-	// arrow keys
+int serial_poll(device dev, char *buffer, size_t len) {
+    if (!buffer || len == 0) {
+        return -1; // Invalid input
+    }
 
-	// REMOVE THIS -- IT ONLY EXISTS TO AVOID UNUSED PARAMETER WARNINGS
-	// Failure to remove this comment and the following line *will* result in
-	// losing points for inattention to detail
-	(void)dev; (void)buffer;
+    size_t bytesRead = 0;
+    size_t cursorPos = 0;
+    int is_escape_seq = 0;
 
-	// THIS MUST BE CHANGED TO RETURN THE CORRECT VALUE
-	return (int)len;
+    while (bytesRead < len - 1) {
+        if (inb(dev + LSR) & 0x01) {
+            char c = inb(dev);
+            if (is_escape_seq) {
+                if (c == '[') {
+                    is_escape_seq++;
+                } else if (is_escape_seq == 2) {
+                    if (c == 'D' && cursorPos > 0) { // Left Arrow
+                        cursorPos--;
+                        char moveLeft[] = {0x1B, '[', 'D'};
+                        serial_out(dev, moveLeft, 3);
+                    } else if (c == 'C' && cursorPos < bytesRead) { // Right Arrow
+                        cursorPos++;
+                        char moveRight[] = {0x1B, '[', 'C'};
+                        serial_out(dev, moveRight, 3);
+                    }
+                    is_escape_seq = 0;
+                }
+                continue;
+            }
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+                (c >= '0' && c <= '9') || c == ' ') {
+                // Insert the new character
+                for (size_t i = bytesRead; i > cursorPos; i--) {
+                    buffer[i] = buffer[i - 1];
+                }
+                buffer[cursorPos] = c;
+                cursorPos++;
+                bytesRead++;
+                serial_out(dev, &c, 1);
+            } else if (c == 0x08 || c == 0x7F) { // Backspace or Delete
+                if (cursorPos > 0) {
+                    // Remove the character from the buffer
+                    for (size_t i = cursorPos; i < bytesRead; i++) {
+                        buffer[i - 1] = buffer[i];
+                    }
+                    cursorPos--;
+                    bytesRead--;
+                    // Explicitly null-terminate the updated buffer
+                    buffer[bytesRead] = '\0';
+                    // Clear from cursor to end of line
+                    char moveLeft[] = {0x1B, '[', 'D'};
+                    char clearLine[] = {0x1B, '[', 'K'};
+                    serial_out(dev, moveLeft, 3);
+                    serial_out(dev, clearLine, 3);
+
+                    // Redraw the line after cursor
+                    for (size_t i = cursorPos; i < bytesRead; i++) {
+                        serial_out(dev, &buffer[i], 1);
+                    }
+                    // Add a space at the end to overwrite any stray character
+                    char space = ' ';
+                    serial_out(dev, &space, 1);
+                    // Move cursor back to original position + 1 (to cover the added space)
+                    for (size_t i = bytesRead + 1; i > cursorPos; i--) {
+                        serial_out(dev, moveLeft, 3);
+                    }
+                }
+            } else if (c == 0x1B) { // Start of an Escape Sequence
+                is_escape_seq = 1;
+            } else if (c == '\n' || c == '\r') { // New Line or Carriage Return
+                buffer[bytesRead] = c;
+                bytesRead++;
+                serial_out(dev, &c, 1);
+                break;
+            }
+        }
+    }
+    buffer[bytesRead] = '\0';
+    return (int) bytesRead;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
