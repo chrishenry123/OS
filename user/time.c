@@ -39,7 +39,7 @@ int bcdToDecimal(int bcd) {
 
 
 // Function to get the current time
-void get_time() {
+void get_time(void) {
     int seconds,minutes, hours;
 
     // Disable interrupts
