@@ -6,6 +6,8 @@
 #include "version.h"
 #include "help.h"
 #include "time.h"
+#include "pcb.h"
+#include "pcbuser.h"
 #include <string.h> // for string manipulation functions
 #include <sys_req.h>
 #include <mpx/serial.h>
