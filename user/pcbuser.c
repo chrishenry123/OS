@@ -86,8 +86,8 @@ void createPCB() {
 	}
 	
 	// Calls the kernel methods to make and insert the pcb
-//	struct pcb* userPCB = pcb_setup(name, pcbClass, priority);
-//	pcb_insert(userPCB);
+	struct pcb* userPCB = pcb_setup(name, pcbClass, priority);
+	pcb_insert(userPCB);
 }
 
 void deletePCB() {
