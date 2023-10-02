@@ -7,7 +7,7 @@
 
 void createPCB() {
 	char name[50] = {0};
-	int class = 0;
+	int pcbClass = 0;
 	int priority = 0;
 	
 	// NAME LOOP
@@ -52,7 +52,7 @@ void createPCB() {
 		// Checks if 1 or 0 was input
 		if(strcmp(classIn, "0") == 0 || strcmp(classIn, "1") == 0) {
 			// If we get here then user input was fine and we can break out
-			class = atoi(classIn);
+			pcbClass = atoi(classIn);
 			break;
 		}
 		
@@ -86,7 +86,7 @@ void createPCB() {
 	}
 	
 	// Calls the kernel methods to make and insert the pcb
-//	struct pcb* userPCB = pcb_setup(name, class, priority);
+//	struct pcb* userPCB = pcb_setup(name, pcbClass, priority);
 //	pcb_insert(userPCB);
 }
 
