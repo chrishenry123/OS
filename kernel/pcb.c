@@ -64,6 +64,18 @@ struct pcb* pcb_find(const char *name) {
     }
     return NULL;
 }
+void pcb_insert(struct pcb* inserted){
+	int currentState = inserted->exec_state;
+	
+	if(currentState == 1) { // IS BLOCKED
+		// Push in blocked
+	}
+	else if(currentState == 0) { // IS READY
+		// Put in ready
+	}
+	return;
+}
+
 // Removes a PCB from its current queue
 int pcb_remove(struct pcb *target) {
     if (target == NULL) return -1;
