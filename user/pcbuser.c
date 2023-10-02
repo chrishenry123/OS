@@ -86,8 +86,8 @@ void createPCB() {
 	}
 	
 	// Calls the kernel methods to make and insert the pcb
-	struct pcb* userPCB = pcb_setup(name, class, priority);
-	pcb_insert(userPCB);
+//	struct pcb* userPCB = pcb_setup(name, class, priority);
+//	pcb_insert(userPCB);
 }
 
 void deletePCB() {
@@ -150,7 +150,7 @@ void blockPCB() {
 		blockPCB->exec_state = 1;
 		
 		// Re-inserts the PCB to appropriate queue
-		pcb_insert(blockPCB);
+//		pcb_insert(blockPCB);
 	}
 }
 
@@ -180,7 +180,7 @@ void unblockPCB() {
 		unblockPCB->exec_state = 0;
 		
 		// Re-inserts the PCB to appropriate queue
-		pcb_insert(unblockPCB);
+//		pcb_insert(unblockPCB);
 	}
 }
 
@@ -216,7 +216,7 @@ void suspendPCB() {
 		suspendPCB->disp_state = 1;
 		
 		// Re-inserts the PCB to appropriate queue
-		pcb_insert(suspendPCB);
+//		pcb_insert(suspendPCB);
 	}
 }
 
