@@ -138,6 +138,9 @@
                 
                 <dt>void suspendPCB(char str[], int length)</dt>
                 <dd>Takes in no parameters, it works by asking for the PCB name from the user. It does a check to see if the PCB exists by running the pcb_find method, and if the PCB isn't found it will return an print an error. It then checks if the PCB is a system process and if it is it will return and print an error. Otherwise we know it exists and the PCB is removed from it's current queue and the state is switched to suspended and then it is readded to the appropriate queue.</dd>
+
+                <dt>void resume_pcb(void)</dt>
+                <dd> Takes in no parameters, it works by asking for the PCB name they wish to resume. Checks if the name exists in the structure, if not found it will output an error message. If exists then it will remove it from the current queue, channge state to resume and inserts it into the resume queue. </dd>
                 
             </dl>
             <h3>Data Types</h3>
