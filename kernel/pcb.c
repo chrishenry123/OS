@@ -1,6 +1,6 @@
 #include "pcb.h"
 #include "memory.h"  // Assume this header has sys_alloc_mem and sys_free_mem
-#include <string.h>  // For strncpy and strcmp
+#include <string.h>
 
 
 struct pcb *ReadyQueue = NULL;
@@ -64,17 +64,39 @@ struct pcb* pcb_find(const char *name) {
     }
     return NULL;
 }
-void pcb_insert(struct pcb* inserted){
-	int currentState = inserted->exec_state;
-	
-	if(currentState == 1) { // IS BLOCKED
-		// Push in blocked
-	}
-	else if(currentState == 0) { // IS READY
-		// Put in ready
-	}
-	return;
+
+void pcb_insert(struct pcb* inserted) {
+    if (!inserted) return;  // Guard against null input
+
+    struct pcb **queue;
+    struct pcb *current;
+    struct pcb *prev = NULL;
+
+    if (inserted->exec_state == BLOCKED) {
+        queue = &BlockedQueue;
+        // Simply push to the front of the BlockedQueue.
+        inserted->next = *queue;
+        *queue = inserted;
+    } else if (inserted->exec_state == READY) {
+        queue = &ReadyQueue;
+        current = *queue;
+        // Find the correct position based on priority.
+        while (current && current->priority <= inserted->priority) {
+            prev = current;
+            current = current->next;
+        }
+        // Insert the new PCB.
+        if (prev) {
+            prev->next = inserted;
+        } else {
+            // If prev is NULL, this means the inserted PCB has higher
+            // priority than all other PCBs, so it should be at the front.
+            *queue = inserted;
+        }
+        inserted->next = current;
+    }
 }
+
 
 // Removes a PCB from its current queue
 int pcb_remove(struct pcb *target) {

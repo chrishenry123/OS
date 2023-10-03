@@ -84,13 +84,27 @@ int serial_poll(device dev, char *buffer, size_t len) {
                         cursorPos++;
                         char moveRight[] = {0x1B, '[', 'C'};
                         serial_out(dev, moveRight, 3);
+                    } else if (c == '3' && inb(dev) == '~') { // Delete Key
+                        if (cursorPos < bytesRead) {
+                            for (size_t i = cursorPos + 1; i < bytesRead; i++) {
+                                buffer[i - 1] = buffer[i];
+                            }
+                            bytesRead--;
+                            buffer[bytesRead] = '\0';
+                            char clearLine[] = {0x1B, '[', 'K'};
+                            serial_out(dev, clearLine, 3);
+                            for (size_t i = cursorPos; i < bytesRead; i++) {
+                                serial_out(dev, &buffer[i], 1);
+                            }
+                        }
                     }
                     is_escape_seq = 0;
                 }
                 continue;
             }
             if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-                (c >= '0' && c <= '9') || c == ' ') {
+                (c >= '0' && c <= '9') || c == ' ' || c == ':' ||
+                c == ';' || c == '.' || c == ',') {
                 // Insert the new character
                 for (size_t i = bytesRead; i > cursorPos; i--) {
                     buffer[i] = buffer[i - 1];
@@ -99,7 +113,7 @@ int serial_poll(device dev, char *buffer, size_t len) {
                 cursorPos++;
                 bytesRead++;
                 serial_out(dev, &c, 1);
-            } else if (c == 0x08 || c == 0x7F) { // Backspace or Delete
+            } else if (c == 0x08 || c == 0x7F) { // Backspace or Delete (on some terminals)
                 if (cursorPos > 0) {
                     // Remove the character from the buffer
                     for (size_t i = cursorPos; i < bytesRead; i++) {
@@ -107,7 +121,6 @@ int serial_poll(device dev, char *buffer, size_t len) {
                     }
                     cursorPos--;
                     bytesRead--;
-                    // Explicitly null-terminate the updated buffer
                     buffer[bytesRead] = '\0';
                     // Clear from cursor to end of line
                     char moveLeft[] = {0x1B, '[', 'D'};
@@ -119,11 +132,8 @@ int serial_poll(device dev, char *buffer, size_t len) {
                     for (size_t i = cursorPos; i < bytesRead; i++) {
                         serial_out(dev, &buffer[i], 1);
                     }
-                    // Add a space at the end to overwrite any stray character
-                    char space = ' ';
-                    serial_out(dev, &space, 1);
-                    // Move cursor back to original position + 1 (to cover the added space)
-                    for (size_t i = bytesRead + 1; i > cursorPos; i--) {
+                    // Move cursor back to original position
+                    for (size_t i = bytesRead; i > cursorPos; i--) {
                         serial_out(dev, moveLeft, 3);
                     }
                 }
@@ -140,6 +150,7 @@ int serial_poll(device dev, char *buffer, size_t len) {
     buffer[bytesRead] = '\0';
     return (int) bytesRead;
 }
+
 
 
 

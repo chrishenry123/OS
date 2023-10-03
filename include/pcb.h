@@ -38,6 +38,10 @@ struct pcb* pcb_setup(const char*, int, int);
 struct pcb* pcb_find(const char*);
 void pcb_insert(struct pcb*);
 int pcb_remove(struct pcb*);
+void resume_pcb(void);
+
+extern struct pcb *ReadyQueue;
+extern struct pcb *BlockedQueue;
 
 
 
