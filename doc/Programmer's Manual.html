@@ -147,6 +147,9 @@
 
                 <dt>void show_pcb(void)</dt>
                 <dd> Takes in no parameters, promtps the user for the pcb name, checks for existence of the pcb. If it does not exist, an output message will be thrown. If if does exist then it is located with pcb_find. Created strings for name, class, state, priority, and suspension. Converts these characteristics into the string version via an itoa call for each. Outputs these consecutively via a sys_req call for each.  </dd>
+
+                <dt>void show_all(void)</dt>
+                <dd>Shows all pcbs by calling show_ready() and show_blocked(). Show_ready displays the ready processes and show_blocked displays the blocked processes. Combined together they cover all processes. </dd>
                 
             </dl>
             <h3>Data Types</h3>
