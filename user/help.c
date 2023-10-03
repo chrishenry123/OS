@@ -96,4 +96,86 @@ void help(void) {
 	
 	// Outputs the description for gettime command
 	sys_req(WRITE, COM1, getdate_desc, strlen(getdate_desc));
+	
+	// Create PCB
+	char createPCB_name[] = "Name\n\tCreatePCB - Will create a PCB from user input.\n";
+	sys_req(WRITE, COM1, createPCB_name, strlen(createPCB_name));
+	char createPCB_args[] = "Arguments\n\tArguments - Three user inputs of 'name' (char array), 'class' (int 0 or 1), 'priority' (0-9)\n";
+	sys_req(WRITE, COM1, createPCB_args, strlen(createPCB_args));
+	char createPCB_desc[] = "Description\n\tThis command will take in user input for a name (less than 10 characters), class and priority\n\tand create a PCB from the given user input values.\n\n";
+	sys_req(WRITE, COM1, createPCB_desc, strlen(createPCB_desc));
+	
+	// Delete PCB
+	char deletePCB_name[] = "Name\n\tDeletePCB - Will delete a PCB based on name given by user.\n";
+	sys_req(WRITE, COM1, deletePCB_name, strlen(deletePCB_name));
+	char deletePCB_args[] = "Arguments\n\tArguments - User input of the name of the PCB to be deleted\n";
+	sys_req(WRITE, COM1, deletePCB_args, strlen(deletePCB_args));
+	char deletePCB_desc[] = "Description\n\tThis command will take in user input for a name and will remove the PCB with that given name\n\tfrom the system (name must be of a PCB that exists).\n\n";
+	sys_req(WRITE, COM1, deletePCB_desc, strlen(deletePCB_desc));
+	
+	// Block PCB
+	char blockPCB_name[] = "Name\n\tBlockPCB - Will move a PCB based on name to the blocked state given by user.\n";
+	sys_req(WRITE, COM1, blockPCB_name, strlen(blockPCB_name));
+	char blockPCB_args[] = "Arguments\n\tArguments - User input of the name of the PCB to be moved to blocked\n";
+	sys_req(WRITE, COM1, blockPCB_args, strlen(blockPCB_args));
+	char blockPCB_desc[] = "Description\n\tThis command will take in user input for a name and will move the PCB with that given name\n\tinto the blocked state (PCB can't be a system process and must not be in blocked state).\n\n";
+	sys_req(WRITE, COM1, blockPCB_desc, strlen(blockPCB_desc));
+	
+	// Unblock PCB
+	char unblockPCB_name[] = "Name\n\tUnblockPCB - Will move a PCB based on name to the unblocked/ready state given by user.\n";
+	sys_req(WRITE, COM1, unblockPCB_name, strlen(unblockPCB_name));
+	char unblockPCB_args[] = "Arguments\n\tArguments - User input of the name of the PCB to be moved to unblocked/ready\n";
+	sys_req(WRITE, COM1, unblockPCB_args, strlen(unblockPCB_args));
+	char unblockPCB_desc[] = "Description\n\tThis command will take in user input for a name and will move the PCB with that given name\n\tinto the unblocked/ready state (PCB must be in blocked state).\n\n";
+	sys_req(WRITE, COM1, unblockPCB_desc, strlen(unblockPCB_desc));
+	
+	// Suspend PCB
+	char suspendPCB_name[] = "Name\n\tSuspendPCB - Will move a PCB based on name to the suspended state given by user.\n";
+	sys_req(WRITE, COM1, suspendPCB_name, strlen(suspendPCB_name));
+	char suspendPCB_args[] = "Arguments\n\tArguments - User input of the name of the PCB to be moved to suspended\n";
+	sys_req(WRITE, COM1, suspendPCB_args, strlen(suspendPCB_args));
+	char suspendPCB_desc[] = "Description\n\tThis command will take in user input for a name and will move the PCB with that given name\n\tinto the suspended state (PCB can't be a system process).\n\n";
+	sys_req(WRITE, COM1, suspendPCB_desc, strlen(suspendPCB_desc));
+	
+	// Resume PCB
+	char resumePCB_name[] = "Name\n\tResumePCB - Will move a PCB based on name out of the suspended state given by user.\n";
+	sys_req(WRITE, COM1, resumePCB_name, strlen(resumePCB_name));
+	char resumePCB_args[] = "Arguments\n\tArguments - User input of the name of the PCB to be moved out of suspended\n";
+	sys_req(WRITE, COM1, resumePCB_args, strlen(resumePCB_args));
+	char resumePCB_desc[] = "Description\n\tThis command will take in user input for a name and will move the PCB with that given name\n\tout of the suspended state.\n\n";
+	sys_req(WRITE, COM1, resumePCB_desc, strlen(resumePCB_desc));
+	
+	//  Set Priority
+	char priorityPCB_name[] = "Name\n\tSetPriority - Will change the priority of a PCB given by the user.\n";
+	sys_req(WRITE, COM1, priorityPCB_name, strlen(priorityPCB_name));
+	char priorityPCB_args[] = "Arguments\n\tArguments - User input of the name of the PCB to change as well as the new priority (0-9)\n";
+	sys_req(WRITE, COM1, priorityPCB_args, strlen(priorityPCB_args));
+	char priorityPCB_desc[] = "Description\n\tThis command will take in user input for a name as well as the priority value that the PCB\n\tshould be changed to and will make that update (name must be a valid PCB that exists and priority must be between 0-9).\n\n";
+	sys_req(WRITE, COM1, priorityPCB_desc, strlen(priorityPCB_desc));
+	
+	// Show PCB
+	char showPCB_name[] = "Name\n\tShowPCB - Will display the PCB with the given name that was provided by the user.\n";
+	sys_req(WRITE, COM1, showPCB_name, strlen(showPCB_name));
+	char showPCB_args[] = "Arguments\n\tArguments - User input of the name of the PCB to display to the user\n";
+	sys_req(WRITE, COM1, showPCB_args, strlen(showPCB_args));
+	char showPCB_desc[] = "Description\n\tThis command will take in user input for a name of the PCB that will be displayed to the\n\tuser, including the information associated with the PCB (name must be a valid name of a PCB that exists).\n\n";
+	sys_req(WRITE, COM1, showPCB_desc, strlen(showPCB_desc));
+	
+	//  Show Ready
+	char ready_name[] = "Name\n\tShowReady - Will display all the PCBs that are currently in the ready queue.\n";
+	sys_req(WRITE, COM1, ready_name, strlen(ready_name));
+	char ready_desc[] = "Description\n\tThis command will display all of the PCBs that have been created that are currently within\n\tthe ready queue in the system.\n\n";
+	sys_req(WRITE, COM1, ready_desc, strlen(ready_desc));
+	
+	//  Show Blocked
+	char blocked_name[] = "Name\n\tShowBlocked - Will display all the PCBs that are currently in the blocked queue.\n";
+	sys_req(WRITE, COM1, blocked_name, strlen(blocked_name));
+	char blocked_desc[] = "Description\n\tThis command will display all of the PCBs that have been created that are currently within\n\tthe blocked queue in the system.\n\n";
+	sys_req(WRITE, COM1, blocked_desc, strlen(blocked_desc));
+	
+	//  Show All
+	char all_name[] = "Name\n\tShowAll - Will display all the PCBs that are currently in the system.\n";
+	sys_req(WRITE, COM1, all_name, strlen(all_name));
+	char all_desc[] = "Description\n\tThis command will display all of the PCBs that have been created that are currently within\n\teither the ready queue or the blocked queue in the system.\n\n";
+	sys_req(WRITE, COM1, all_desc, strlen(all_desc));
 }
