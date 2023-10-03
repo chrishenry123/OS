@@ -146,7 +146,11 @@
                 <dd> Takes in no parameters, prompts the user for the pcb name. Then does an error check to see if the name exists comparing pcb_find(name) to NULL. If does not exist, outputs an error message. If it does find the pcb then it prompts the user for the new priority level. Converts the input to an integer using atoi() then updates the priority. Calls pcb_insert to insert the pcb back into the queue based on its updated priority. Outputs success message.  </dd>
 
                 <dt>void show_pcb(void)</dt>
-                <dd> Takes in no parameters, promtps the user for the pcb name, checks for existence of the pcb. If it does not exist, an output message will be thrown. If if does exist then it is located with pcb_find. Created strings for name, class, state, priority, and suspension. Converts these characteristics into the string version via an itoa call for each. Outputs these consecutively via a sys_req call for each.  </dd>
+                <dd> Takes in no parameters, promtps the user for the pcb name, checks for existence of the pcb. If it does not exist, an output message will be thrown. If if does exist each characteristic (class, exec_state, priority, suspension) are converted to strings via a built in strcpy function.  Ouputs this message with a formatted print f statement (sprintf()) that we built in.  </dd>
+
+                <dt>void show_ready(void)</dt> 
+                <dd>Takes in no parameters. Defines the ReadyQueue and first checks if there are actually any process in the ready queue. If not then an output message is thrown. If the queue has items in it, it will loop through it with a while loop calling a helper function display_pcb at each pcb. </dd>
+            
 
                 <dt>void show_all(void)</dt>
                 <dd>Shows all pcbs by calling show_ready() and show_blocked(). Show_ready displays the ready processes and show_blocked displays the blocked processes. Combined together they cover all processes. </dd>
