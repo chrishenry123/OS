@@ -63,7 +63,7 @@ void create_pcb(void) {
 
     // PRIORITY LOOP
     while (1) {
-        char askForPriority[] = "\nPlease enter the priority level: User - 0, System - 1.";
+        char askForPriority[] = "\nPlease enter the priority level: User - 0, System - 1. ";
         sys_req(WRITE, COM1, askForPriority, strlen(askForPriority));
 
         char priorityIn[50] = {0};
