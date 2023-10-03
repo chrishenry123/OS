@@ -149,9 +149,14 @@
                 <dd> Takes in no parameters, promtps the user for the pcb name, checks for existence of the pcb. If it does not exist, an output message will be thrown. If if does exist each characteristic (class, exec_state, priority, suspension) are converted to strings via a built in strcpy function.  Ouputs this message with a formatted print f statement (sprintf()) that we built in.  </dd>
 
                 <dt>void show_ready(void)</dt> 
-                <dd>Takes in no parameters. Defines the ReadyQueue and first checks if there are actually any process in the ready queue. If not then an output message is thrown. If the queue has items in it, it will loop through it with a while loop calling a helper function display_pcb at each pcb. </dd>
-            
+                <dd>Takes in no parameters. Defines the ReadyQueue and first checks if there are actually any process in the ready queue. If not then an output message is thrown. If the queue has pcbs in it, it will loop through it with a while loop calling a helper function display_pcb at each pcb. </dd>
 
+                <dt>void show_blocked(void)</dt> 
+                <dd> Takes in no parameters. Defined the BlockedQueue and first checksif there are actually any processes in the blocked queue. If not then an output message is thrown. If the queue has pcbs in it, it will loop through it with a while loop calling a helper function display_pcb at each pcb. </dd>
+
+                <dt>void display_pcb(void)</dt> 
+                <dd> Takes in 1 parameter . Initializes the class string, execution state string, priority string, suspension strings. Formats each characteristic for easy output. Outputs them as a group using a built in formatted print function called sprintf.  </dd>
+            
                 <dt>void show_all(void)</dt>
                 <dd>Shows all pcbs by calling show_ready() and show_blocked(). Show_ready displays the ready processes and show_blocked displays the blocked processes. Combined together they cover all processes. </dd>
                 
