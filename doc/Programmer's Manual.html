@@ -143,7 +143,7 @@
                 <dd> Takes in no parameters, it works by asking for the PCB name they wish to resume. Checks if the name exists in the structure, if not found it will output an error message. Then checks if the process is already in the not suspended state. If it is there is no need to change it and a message will be shown. If it does exist and suspened then it will change the state to not suspened and Re-inserts the PCB to the appropriate queue. </dd>
 
                 <dt>void set_priority(void)</dt>
-                <dd> Takes in no parameters, prompts the user for the pcb name, checks for existence of pcb. If does not exist, outputs an error message. If it does find the pcb then it prompts the user for a priority level, converts the input from a string to an integer then updates the priority. </dd>
+                <dd> Takes in no parameters, prompts the user for the pcb name. Then does an error check to see if the name exists comparing pcb_find(name) to NULL. If does not exist, outputs an error message. If it does find the pcb then it prompts the user for the new priority level. Converts the input to an integer using atoi() then updates the priority. Calls pcb_insert to insert the pcb back into the queue based on its updated priority. Outputs success message.  </dd>
 
                 <dt>void show_pcb(void)</dt>
                 <dd> Takes in no parameters, promtps the user for the pcb name, checks for existence of the pcb. If it does not exist, an output message will be thrown. If if does exist then it is located with pcb_find. Created strings for name, class, state, priority, and suspension. Converts these characteristics into the string version via an itoa call for each. Outputs these consecutively via a sys_req call for each.  </dd>
