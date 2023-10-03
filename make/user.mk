@@ -8,4 +8,5 @@ USER_OBJECTS=\
 	user/cmdHandler.o \
 	user/help.o \
 	user/version.o \
-	user/time.o
+	user/time.o \
+	user/pcbuser.o

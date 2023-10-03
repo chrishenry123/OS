@@ -75,3 +75,36 @@ char *strtok(char * restrict s1, const char * restrict s2)
 	tok_tmp = NULL;
 	return s1;
 }
+
+char* strcpy(char *dest, const char *src) {
+    char* original_dest = dest;  // Remember the start of the destination
+    while (*src) {
+        *dest = *src;
+        dest++;
+        src++;
+    }
+    *dest = '\0';
+    return original_dest;  // Return the start of the destination
+}
+
+char* strcat(char *dest, const char *src) {
+    char* original_dest = dest;  // Remember the start of the destination
+    while (*dest) {
+        dest++;
+    }
+    while (*src) {
+        *dest = *src;
+        dest++;
+        src++;
+    }
+    *dest = '\0';
+    return original_dest;  // Return the start of the destination
+}
+
+// Function to remove trailing whitespace from a string
+void rtrim(char *str) {
+    int n = strlen(str) - 1;
+    while (n >= 0 && (str[n] == ' ' || str[n] == '\t' || str[n] == '\n' || str[n] == '\r')) {
+        str[n--] = '\0';
+    }
+}

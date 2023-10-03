@@ -21,6 +21,7 @@
             <li><a href="#help">Help</a></li>
             <li><a href="#version">Version</a></li>
             <li><a href="#time">Time</a></li>
+            <li><a href="#pcbuser">PCB User</a></li>
         </ul>
     </div>
 
@@ -113,6 +114,52 @@
                 
                 <dt>char* itoa(int num, char* str, int base)</dt>
                 <dd>Takes in three parameters, one for the number to be converted, one for the string where the integer is saved to and one for the base of the number that is passed in (Ex. base 10 is standard). This method works by going through and converting an integer to to a string and then returning that integer as a string pointer back to wherever called this method.</dd>
+            </dl>
+            <h3>Data Types</h3>
+            <p>No custom data types are used.</p>
+        </section>
+        
+        <!-- PCB User -->
+        <section id="pcbuser">
+            <h2>PCB User</h2>
+            <h3>Functions</h3>
+            <dl>
+                <dt>void create_pcb(void)</dt>
+                <dd>Takes in no parameters when the method is called. The method works by running through three different while loops that break out once the provided user input is valid. The first loop first takes in a name for a PCB from the user and checks to see if the name is either too long (longer than 10 chars) or already in use, if so the loop will skip to the next iteration and reprompt, if not it will keep the saved user input and break out of the loop. Then in the second loop it takes in a class input from the user and checks to see if that value is either 0 or 1 (user or system class). If the input is proper it will break out of the loop and if not it will skip to the next iteration of the loop and reprompt. Finally in the priority loop the user is prompted for the priority associated with the PCB. The code checks that the priority is in the valid range of 0 to 9 and if so it will break out of the loop, if not it will repeat and ask again. After each of these loops run and get the needed information from the user the method calls the pcb_setup and pcb_insert commands to actually create the PCB and add it to the required queue.</dd>
+
+                <dt>void delete_pcb(void)</dt>
+                <dd>Takes in no parameters when the method is called. The method works by asking the user to input a name from there it checks to see whether or not that name is a PCB that is being stored by calling the pcb_find method. I then checks to see if the class of that PCB (if it exists) is a system process and if either of those things fail out (i.e. if name isn't a PCB or the class is a system process) it will return an error. Otherwise it will then call the pcb_remove function to remove the PCB.</dd>
+
+                <dt>void block_pcb(void)</dt>
+                <dd>Takes in no parameters, it works by asking for the PCB name from the user. It does a check to see if the PCB exists by running the pcb_find method, and if the PCB isn't found it will return an print an error. Otherwise we know it exists and the PCB is removed from it's current queue and the state is switched to blocked (1) and then it is readded to the appropriate queue.</dd>
+                
+                <dt>void unblock_pcb(void)</dt>
+                <dd>Takes in no parameters, it works by asking for the PCB name from the user. It does a check to see if the PCB exists by running the pcb_find method, and if the PCB isn't found it will return an print an error. Otherwise we know it exists and the PCB is removed from it's current queue and the state is switched to unblocked/ready (0) and then it is readded to the appropriate queue.</dd>
+                
+                <dt>void suspend_pcb(char str[], int length)</dt>
+                <dd>Takes in no parameters, it works by asking for the PCB name from the user. It does a check to see if the PCB exists by running the pcb_find method, and if the PCB isn't found it will return an print an error. It then checks if the PCB is a system process and if it is it will return and print an error. Otherwise we know it exists and the PCB is removed from it's current queue and the state is switched to suspended and then it is readded to the appropriate queue.</dd>
+
+                <dt>void resume_pcb(void)</dt>
+                <dd> Takes in no parameters, it works by asking for the PCB name they wish to resume. Checks if the name exists in the structure, if not found it will output an error message. Then checks if the process is already in the not suspended state. If it is there is no need to change it and a message will be shown. If it does exist and suspened then it will change the state to not suspened and Re-inserts the PCB to the appropriate queue. </dd>
+
+                <dt>void set_priority(void)</dt>
+                <dd> Takes in no parameters, prompts the user for the pcb name. Then does an error check to see if the name exists comparing pcb_find(name) to NULL. If does not exist, outputs an error message. If it does find the pcb then it prompts the user for the new priority level. Converts the input to an integer using atoi() then updates the priority. Calls pcb_insert to insert the pcb back into the queue based on its updated priority. Outputs success message.  </dd>
+
+                <dt>void show_pcb(void)</dt>
+                <dd> Takes in no parameters, promtps the user for the pcb name, checks for existence of the pcb. If it does not exist, an output message will be thrown. If if does exist each characteristic (class, exec_state, priority, suspension) are converted to strings via a built in strcpy function.  Ouputs this message with a formatted print f statement (sprintf()) that we built in.  </dd>
+
+                <dt>void show_ready(void)</dt> 
+                <dd>Takes in no parameters. Defines the ReadyQueue and first checks if there are actually any process in the ready queue. If not then an output message is thrown. If the queue has pcbs in it, it will loop through it with a while loop calling a helper function display_pcb at each pcb. </dd>
+
+                <dt>void show_blocked(void)</dt> 
+                <dd> Takes in no parameters. Defined the BlockedQueue and first checksif there are actually any processes in the blocked queue. If not then an output message is thrown. If the queue has pcbs in it, it will loop through it with a while loop calling a helper function display_pcb at each pcb. </dd>
+
+                <dt>void display_pcb(void)</dt> 
+                <dd> Takes in 1 parameter . Initializes the class string, execution state string, priority string, suspension strings. Formats each characteristic for easy output. Outputs them as a group using a built in formatted print function called sprintf.  </dd>
+            
+                <dt>void show_all(void)</dt>
+                <dd>Shows all pcbs by calling show_ready() and show_blocked(). Show_ready displays the ready processes and show_blocked displays the blocked processes. Combined together they cover all processes. </dd>
+                
             </dl>
             <h3>Data Types</h3>
             <p>No custom data types are used.</p>

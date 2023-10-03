@@ -47,4 +47,11 @@ size_t strlen(const char *s);
 */
 char* strtok(char * restrict s1, const char * restrict s2);
 
+
+char* strcpy(char *dest, const char *src);
+
+char* strcat(char *dest, const char *src);
+
+void rtrim(char *str);
+
 #endif
