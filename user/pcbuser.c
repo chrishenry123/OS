@@ -132,7 +132,7 @@ void delete_pcb(void) {
 
     // Remove the PCB and free associated memory
     pcb_remove(targetPCB);
-    pcb_free(targetPCB);  // Assuming you have a pcb_free function to free memory
+    pcb_free(targetPCB);
 
     // Notify user of the deletion
     char successMsg[100];
@@ -145,18 +145,15 @@ void delete_pcb(void) {
 void block_pcb(void) {
     char name[50] = {0};
 
-    // Prompts user for PCB name
     char askForName[] = "\nPlease enter the PCB name: ";
     sys_req(WRITE, COM1, askForName, strlen(askForName));
 
-    // Reads in user response
     int userIn = sys_req(READ, COM1, name, sizeof(name) - 1);
-    name[userIn] = '\0'; // Null-terminate
+    name[userIn] = '\0';
     while (userIn > 0 && (name[userIn-1] == '\n' || name[userIn-1] == '\r')) {
         name[--userIn] = '\0';
     }
 
-    // Check for PCB existence and find it
     struct pcb* block_pcb = pcb_find(name);
     if (block_pcb == NULL) {
         char nameMsg[] = "Name entered does not exist.\n";
@@ -164,51 +161,39 @@ void block_pcb(void) {
         return;
     }
 
-    // Check if the process is a system process
-    if (block_pcb->class == 1) {
+    if (block_pcb->class == SYSTEM_PROCESS) {
         char errorMsg[] = "The entered name corresponds to a system process and cannot be blocked.\n";
         sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
         return;
     }
 
-    // Check if the process is already in the blocked state
-    if (block_pcb->exec_state == 1) {
+    if (block_pcb->exec_state == BLOCKED) {
         char errorMsg[] = "The process is already in the blocked state.\n";
         sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
         return;
     }
 
-    // Remove the PCB from its current queue
     pcb_remove(block_pcb);
-
-    // Changes exec_state to blocked
-    block_pcb->exec_state = 1;  // Assuming 1 is the blocked state
-
-    // Re-inserts the PCB to the appropriate queue
+    block_pcb->exec_state = BLOCKED;
     pcb_insert(block_pcb);
 
-    // Notify user of the blocking
     char successMsg[100];
     sprintf(successMsg, "\nPCB %s has been blocked successfully.\n", name);
     sys_req(WRITE, COM1, successMsg, strlen(successMsg));
 }
 
-
 void unblock_pcb(void) {
     char name[50] = {0};
 
-    // Prompts user for PCB name
     char askForName[] = "\nPlease enter the PCB name: ";
     sys_req(WRITE, COM1, askForName, strlen(askForName));
 
-    // Reads in user response
     int userIn = sys_req(READ, COM1, name, sizeof(name) - 1);
-    name[userIn] = '\0'; // Null-terminate
+    name[userIn] = '\0';
     while (userIn > 0 && (name[userIn-1] == '\n' || name[userIn-1] == '\r')) {
         name[--userIn] = '\0';
     }
 
-    // Check for PCB existence and find it
     struct pcb* unblock_pcb = pcb_find(name);
     if (unblock_pcb == NULL) {
         char nameMsg[] = "Name entered does not exist.\n";
@@ -216,23 +201,16 @@ void unblock_pcb(void) {
         return;
     }
 
-    // Check if the process is already in the unblocked (or ready) state
-    if (unblock_pcb->exec_state == 0) {
+    if (unblock_pcb->exec_state == READY) {
         char errorMsg[] = "The process is already in the unblocked (or ready) state.\n";
         sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
         return;
     }
 
-    // Remove the PCB from its current queue
     pcb_remove(unblock_pcb);
-
-    // Changes exec_state to unblocked/ready
-    unblock_pcb->exec_state = 0;  // Assuming 0 is the unblocked/ready state
-
-    // Re-inserts the PCB to the appropriate queue
+    unblock_pcb->exec_state = READY;
     pcb_insert(unblock_pcb);
 
-    // Notify user of the unblocking
     char successMsg[100];
     sprintf(successMsg, "\nPCB %s has been unblocked successfully.\n", name);
     sys_req(WRITE, COM1, successMsg, strlen(successMsg));
