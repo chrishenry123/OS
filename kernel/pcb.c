@@ -1,5 +1,6 @@
 #include "pcb.h"
-#include "memory.h"  // Assume this header has sys_alloc_mem and sys_free_mem
+#include "memory.h"
+#include "context.h"
 #include <string.h>
 
 
@@ -31,6 +32,7 @@ int pcb_free(struct pcb *pcb_to_free) {
 }
 
 // Sets up a new PCB with initial values
+// Sets up a new PCB with initial values
 struct pcb* pcb_setup(const char *name, int class, int priority) {
     struct pcb *new_pcb = pcb_allocate();
     if (new_pcb == NULL || name == NULL || strlen(name) < 1 || strlen(name) > 15 || priority < 0 || priority > 9) {
@@ -47,8 +49,16 @@ struct pcb* pcb_setup(const char *name, int class, int priority) {
     new_pcb->exec_state = READY;
     new_pcb->disp_state = NOT_SUSPENDED;
 
+    // Allocate space for context in the stack
+    new_pcb->stack_pointer = (char *)new_pcb->stack_pointer - sizeof(struct context);
+    new_pcb->context = (struct context *)new_pcb->stack_pointer;
+
+    // Initialize context to 0 (optional but recommended)
+    memset(new_pcb->context, 0, sizeof(struct context));
+
     return new_pcb;
 }
+
 
 // Find PCB by name
 struct pcb* pcb_find(const char *name) {
