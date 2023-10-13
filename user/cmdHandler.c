@@ -6,6 +6,7 @@
 #include "time.h"
 #include "pcb.h"
 #include "pcbuser.h"
+#include "load_r3.h"
 #include <string.h> // for string manipulation functions
 #include <sys_req.h>
 #include <mpx/serial.h>
@@ -44,7 +45,7 @@ static command_map_t time_date_commands[] = {
 };
 
 static command_map_t pcb_commands[] = {
-        {"Create PCB", create_pcb, "Creating PCB...\n", -1},
+        {"Load R3", load_r3, "Loading R3 test processes...\n", -1},
         {"Delete PCB", delete_pcb, "Deleting PCB...\n", -1},
         {"Block PCB", block_pcb, "Blocking PCB...\n", -1},
         {"Unblock PCB", unblock_pcb, "Unblocking PCB...\n", -1},

@@ -5,7 +5,7 @@
 #ifndef FIJI_PCB_H
 #define FIJI_PCB_H
 
-#include "memory.h"  // Assuming sys_alloc_mem() and sys_free_mem() are defined here
+#include "memory.h"  /
 
 // Process classes
 #define USER_PROCESS 0
@@ -29,6 +29,7 @@ struct pcb {
     void *stack;              // Pointer to the process stack
     void *stack_pointer;      // Stack pointer
     struct pcb *next;         // Pointer to the next PCB for building queues
+    struct context *context;
 };
 
 // Function prototypes

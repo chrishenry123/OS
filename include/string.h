@@ -54,4 +54,6 @@ char* strcat(char *dest, const char *src);
 
 void rtrim(char *str);
 
+char* strncpy(char *dst, const char *src, size_t n);
+
 #endif

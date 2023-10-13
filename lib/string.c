@@ -108,3 +108,21 @@ void rtrim(char *str) {
         str[n--] = '\0';
     }
 }
+
+
+char* strncpy(char *dst, const char *src, size_t n) {
+    size_t i;
+
+    // Copy characters from 'src' to 'dst' for up to 'n' characters or until a null terminator is found
+    for (i = 0; i < n && src[i] != '\0'; i++) {
+        dst[i] = src[i];
+    }
+
+    // If the loop ends before 'n' iterations (because of a null terminator in 'src'),
+    // fill the rest of 'dst' up to 'n' characters with null bytes
+    for (; i < n; i++) {
+        dst[i] = '\0';
+    }
+
+    return dst;
+}
