@@ -5,7 +5,7 @@
 #ifndef FIJI_PCB_H
 #define FIJI_PCB_H
 
-#include "memory.h"  /
+#include "memory.h"
 
 // Process classes
 #define USER_PROCESS 0
