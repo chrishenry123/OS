@@ -13,4 +13,5 @@ USER_OBJECTS=\
 	user/version.o \
 	user/time.o \
 	user/pcbuser.o \
-	user/load_r3.o
+	user/load_r3.o \
+	user/alarm.o
