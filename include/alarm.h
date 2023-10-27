@@ -10,3 +10,4 @@ struct time {
 };
 
 void alarm(struct time, char*);
+void get_alarm(void);
