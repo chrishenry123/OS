@@ -18,17 +18,24 @@
 
 void alarm(struct time trigger, char* msg) {
 
-	int current_s, current_m, current_h;
+	for(;;) {
+		int current_s, current_m, current_h;
 	
-	// Read seconds, minutes, and hours from RTC registers
-	current_s = bcdToDecimal(readRTC(RTC_SECONDS_REG));
-	current_m = bcdToDecimal(readRTC(RTC_MINUTES_REG));
-	current_h = bcdToDecimal(readRTC(RTC_HOURS_REG));
+			// Read seconds, minutes, and hours from RTC registers
+		current_s = bcdToDecimal(readRTC(RTC_SECONDS_REG));
+		current_m = bcdToDecimal(readRTC(RTC_MINUTES_REG));
+		current_h = bcdToDecimal(readRTC(RTC_HOURS_REG));
 	
-	// If the alarm is past the right time to alert the user
-	if(trigger.hours > current_h && trigger.minutes > current_m && trigger.seconds > current_s) {
-	sys_req(WRITE, COM1, msg, strlen(msg));
+		// If the alarm is past the right time to alert the user
+		if((current_h > trigger.hours) || (current_h == trigger.hours && current_m > trigger.minutes) || (current_h == trigger.hours && current_m == trigger.minutes && current_s > trigger.seconds)) {
+			sys_req(WRITE, COM1, msg, strlen(msg));
+			break;
+		}
+		else {
+			sys_req(IDLE);
+		}
 	}
+	sys_req(EXIT);
 }
 
 void get_alarm() {
