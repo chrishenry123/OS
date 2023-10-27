@@ -14,4 +14,5 @@ USER_OBJECTS=\
 	user/time.o \
 	user/pcbuser.o \
 	user/load_r3.o \
-	user/alarm.o
+	user/alarm.o \
+	user/yield.o
