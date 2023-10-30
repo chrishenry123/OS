@@ -12,11 +12,11 @@ struct pcb* pcb_allocate(void) {
     struct pcb *new_pcb = (struct pcb*) sys_alloc_mem(sizeof(struct pcb));
     if (new_pcb == NULL) return NULL;
 
-    new_pcb->stack = sys_alloc_mem(1024);
-    if (new_pcb->stack == NULL) {
-        sys_free_mem(new_pcb);
-        return NULL;
-    }
+   //new_pcb->stack = sys_alloc_mem(1024);
+    //if (new_pcb->stack == NULL) {
+        //sys_free_mem(new_pcb);
+        //return NULL;
+    //}
 
     memset(new_pcb->stack, 0, 1024);
     new_pcb->stack_pointer = (void*)((char*)new_pcb->stack + 1020); // Enough to hold a void *
@@ -50,11 +50,11 @@ struct pcb* pcb_setup(const char *name, int class, int priority) {
     new_pcb->disp_state = NOT_SUSPENDED;
 
     // Allocate space for context in the stack
-    new_pcb->stack_pointer = (char *)new_pcb->stack_pointer - sizeof(struct context);
-    new_pcb->context = (struct context *)new_pcb->stack_pointer;
+    new_pcb->stack_pointer = &new_pcb->stack[1020] - sizeof(struct context);
+    new_pcb->stack_pointer = (struct context *)new_pcb->stack_pointer;
 
     // Initialize context to 0 (optional but recommended)
-    memset(new_pcb->context, 0, sizeof(struct context));
+    memset(new_pcb->stack_pointer, 0, sizeof(struct context));
 
     return new_pcb;
 }

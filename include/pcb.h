@@ -1,4 +1,3 @@
-
 //
 // Created by Dylan Caldwell on 9/15/23.
 //
@@ -26,10 +25,10 @@ struct pcb {
     int priority;             // Process priority
     int exec_state;           // Execution state
     int disp_state;           // Dispatching state
-    void *stack;              // Pointer to the process stack
+    char stack[1024];         // Pointer to the process stack
     void *stack_pointer;      // Stack pointer
     struct pcb *next;         // Pointer to the next PCB for building queues
-    struct context *context;
+//    struct context *context;
 };
 
 // Function prototypes
@@ -47,5 +46,3 @@ extern struct pcb *BlockedQueue;
 
 
 #endif //FIJI_PCB_H
-
-

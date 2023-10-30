@@ -27,24 +27,26 @@ void load_r3(void) {
         new_pcb->priority = priorities[i];
         new_pcb->exec_state = READY;
         new_pcb->disp_state = NOT_SUSPENDED;
-
+        //
+        struct context* new_context = (struct context*)new_pcb->stack_pointer;
         // Initialize the context
-        new_pcb->context->cs = 0x08;
-        new_pcb->context->ds = 0x10;
-        new_pcb->context->es = 0x10;
-        new_pcb->context->fs = 0x10;
-        new_pcb->context->gs = 0x10;
+        new_context->cs = 0x08;
+        new_context->ds = 0x10;
+        new_context->es = 0x10;
+        new_context->fs = 0x10;
+        new_context->gs = 0x10;
+        new_context->ss = 0x10;
         // Adjusted these lines to use the correct fields
-        new_pcb->context->ebp = (uint32_t)(new_pcb->stack_pointer);
-        new_pcb->context->esp = (uint32_t)(new_pcb->stack_pointer);
-        new_pcb->context->eip = (uint32_t)process_funcs[i];
-        new_pcb->context->eflags = 0x0202;
-        new_pcb->context->eax = 0;
-        new_pcb->context->ebx = 0;
-        new_pcb->context->ecx = 0;
-        new_pcb->context->edx = 0;
-        new_pcb->context->esi = 0;
-        new_pcb->context->edi = 0;
+        new_context->esp = (uint32_t)(new_pcb->stack_pointer);
+        new_context->ebp = (uint32_t)(new_pcb->stack_pointer);
+        new_context->eip = (uint32_t)process_funcs[i];
+        new_context->eflags = 0x0202;
+        new_context->eax = 0;
+        new_context->ebx = 0;
+        new_context->ecx = 0;
+        new_context->edx = 0;
+        new_context->esi = 0;
+        new_context->edi = 0;
 
         // Add the new PCB to the queue
         pcb_insert(new_pcb);
