@@ -109,7 +109,7 @@ static void process_command(const char *command) {
         }
         if (strcmp(confirm, "y") == 0) {
             shutdown_requested = 1;  // set the flag true
-            return;
+            sys_req(EXIT);
         }
     } else {
         // Parse the entered command into an integer
