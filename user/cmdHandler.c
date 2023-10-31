@@ -6,6 +6,8 @@
 #include "time.h"
 #include "pcb.h"
 #include "pcbuser.h"
+#include <alarm.h>
+#include <yield.h>
 #include "load_r3.h"
 #include <string.h> // for string manipulation functions
 #include <sys_req.h>
@@ -32,6 +34,8 @@ static command_map_t main_commands[] = {
         {"Time/Date Functions", NULL, "Navigating to Time/Date Functions...\n", 1},
         {"PCB Functions", NULL, "Navigating to PCB Functions...\n", 2},
         {"Version", version, "Displaying Version...\n", -1},
+//        {"Yield", yield, "Yielding current process...\n", -1}, REMOVED FOR M4
+        {"Alarm", get_alarm, "Setting Alarm...\n", -1},
         {NULL, NULL, NULL, -1}
 };
 
@@ -46,6 +50,7 @@ static command_map_t time_date_commands[] = {
 
 static command_map_t pcb_commands[] = {
         {"Load R3", load_r3, "Loading R3 test processes...\n", -1},
+//        {"Create PCB", create_pcb, "Creating PCB...\n", -1}, REMOVED FOR M3
         {"Delete PCB", delete_pcb, "Deleting PCB...\n", -1},
         {"Block PCB", block_pcb, "Blocking PCB...\n", -1},
         {"Unblock PCB", unblock_pcb, "Unblocking PCB...\n", -1},

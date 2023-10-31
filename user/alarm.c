@@ -29,6 +29,7 @@ void alarm(struct time trigger, char* msg) {
 		// If the alarm is past the right time to alert the user
 		if((current_h > trigger.hours) || (current_h == trigger.hours && current_m > trigger.minutes) || (current_h == trigger.hours && current_m == trigger.minutes && current_s > trigger.seconds)) {
 			sys_req(WRITE, COM1, msg, strlen(msg));
+			sys_req(WRITE, COM1, "\n", strlen("\n"));
 			break;
 		}
 		else {
@@ -50,7 +51,7 @@ void get_alarm() {
 	
 	// If the time given by the user is not in the correct format, fail out and return
 	if((alarmTime[2] != ':') || (alarmTime[5] != ':')){
-		char errorMsg[] = "Time given for the alarm to go off is not in the proper format hh:mm:ss";
+		char errorMsg[] = "Time given for the alarm to go off is not in the proper format hh:mm:ss\n\n";
 		sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
 		return;
 	}
@@ -62,17 +63,17 @@ void get_alarm() {
 	
 	// Checks to make sure that the time the user gave is within the range to be valid for an alarm
 	if((hours > 23) || (hours < 0)) {
-		char errorMsg[] = "The hours given is out of the range 0 - 23";
+		char errorMsg[] = "The hours given is out of the range 0 - 23\n\n";
 		sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
 		return;
 	}
 	else if((minutes > 59) || (minutes < 0)) {
-		char errorMsg[] = "The minutes given is out of the range 0 - 59";
+		char errorMsg[] = "The minutes given is out of the range 0 - 59\n\n";
 		sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
 		return;
 	}
 	else if((seconds > 59) || (seconds < 0)) {
-		char errorMsg[] = "The seconds given is out of the range 0 - 59";
+		char errorMsg[] = "The seconds given is out of the range 0 - 59\n\n";
 		sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
 		return;
 	}
