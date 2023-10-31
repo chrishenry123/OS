@@ -164,6 +164,15 @@
             <h3>Data Types</h3>
             <p>No custom data types are used.</p>
         </section>
+
+        <!-- sys_call_isr.s -->
+        <section id="sys_call_is">
+            <dt>Pushes the general purpose registers and segment registers onto the stack in the oposite order they are defined in the context struct. </dt> 
+            <dt>Pushes esp onto the stack and then calls the sys_call function, then eax gen register get stored in esp. </dt>
+            <dt>The registers are then popped is the opposite order they are pushed </dt>
+            <dt>iret called to return isr</dt>
+        </section>
+        
     </div>
 </div>
 
