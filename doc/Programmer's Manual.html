@@ -20,8 +20,12 @@
             <li><a href="#serial-poller">Serial Poller</a></li>
             <li><a href="#help">Help</a></li>
             <li><a href="#version">Version</a></li>
+            <li><a href="#yield">Yield</a></li>
+            <li><a href="#alarm">Alarm</a></li>
             <li><a href="#time">Time</a></li>
             <li><a href="#pcbuser">PCB User</a></li>
+            <li><a href="#loadR3">Load R3</a></li>
+            <li><a href="#syscall">Sys Call</a></li>
         </ul>
     </div>
 
@@ -87,6 +91,33 @@
             <dl>
                 <dt>void version(void)</dt>
                 <dd>Displays the current working version of the MPX compiler. The current version is expressed in the form of R#.? where # stands for the current module being worked on and ? stands for the numbered update to the development branch. For example version R3.2 would represent module 3 being currently worked on, and the second major commit to the Development branch.</dd>
+            </dl>
+            <h3>Data Types</h3>
+            <p>No custom data types are used.</p>
+        </section>
+        
+        <!-- Yield -->
+        <section id="yield">
+            <h2>Yield</h2>
+            <h3>Functions</h3>
+            <dl>
+                <dt>void yield(void)</dt>
+                <dd>When this method is called the current process that is being exectuted gets put into IDLE, meaning the process saves it's current state and gets pushed to the back of the queue.</dd>
+            </dl>
+            <h3>Data Types</h3>
+            <p>No custom data types are used.</p>
+        </section>
+        
+        <!-- Alarm -->
+        <section id="alarm">
+            <h2>Alarm</h2>
+            <h3>Functions</h3>
+            <dl>
+                <dt>void alarm(struct time trigger, char* msg)</dt>
+                <dd>This method gets called by the other method in the related file get_alarm. The variables that are passed in are from the user from the get_alarm method. This method works by taking that time given by the user and checking it against the current system clock. If the current time is past or equal to the time given by the user, the alarm will trigger and display the message the user entered.</dd>
+                
+                <dt>void get_alarm(void)</dt>
+                <dd>This method is the one that directly gets called from the command handler. The user is prompted to enter a time in the form hh:mm:ss (military time 0-23 hours) and a message. Once the user enters these values the time is checked to make sure it is a valid time and if so the method calls the alarm message described above, otherwise it exits the process.</dd>
             </dl>
             <h3>Data Types</h3>
             <p>No custom data types are used.</p>
@@ -164,6 +195,31 @@
             <h3>Data Types</h3>
             <p>No custom data types are used.</p>
         </section>
+
+        <!-- sys_call_isr.s -->
+        <section id="sys_call_is">
+            
+
+
+         <!-- load r3 -->
+        <section id="loadR3">
+        <h2>Load R3</h2>
+        <dd> Customizable names and priorites for process that needs loaded. New context struct is defined and registers are initilized for the new context, uses pcb header and the context struct </dd>
+        </section>
+
+        <!-- sys call -->
+        <section id="syscall" >
+            <h2>Sys Call</h2>
+            <dt>syscall.c file</dt>
+            <dd>There are 4 helper function prototypes defined. There are two global variables that are defined at the top that represent the current executing process and the intial context representing the 1st time the file is entered checks gen purpose register of the context containing operation code. There are two main cases, represented and executed with a switch statement. The cases are IDLE or EXIT. If neither of these cases exist -1 is returne. The IDLE case checks for ready, non suspended pcbs in the queue. If this exists it stores the selected pcb in a temp variable using a helper function called select_next_process(). The stack pointer is updated with save_context(ctx). This makes sure the current pcb exists and if so returns the stack pointer. The alternate case is EXIT (1). It functions as follows.. It frees the memory associated with the recently deleted pcb. Then the first ready, non suspended pcb is loaded. In case of an empty queue, it will load the original context </dd>
+            
+            <dt> sys_call_isr (Assembly Code)
+            <dd>Pushes the general purpose registers and segment registers onto the stack in the oposite order they are defined in the context struct. Pushes esp onto the stack and then calls the sys_call function, then eax gen register get stored in esp. The registers are then popped is the opposite order they are pushed iret called to return isr.</dd>
+        </section>
+        </section>
+        
+
+        
     </div>
 </div>
 

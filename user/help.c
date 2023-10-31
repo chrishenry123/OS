@@ -97,13 +97,11 @@ void help(void) {
 	// Outputs the description for gettime command
 	sys_req(WRITE, COM1, getdate_desc, strlen(getdate_desc));
 	
-	// Create PCB
-	char createPCB_name[] = "Name\n\tCreatePCB - Will create a PCB from user input.\n";
-	sys_req(WRITE, COM1, createPCB_name, strlen(createPCB_name));
-	char createPCB_args[] = "Arguments\n\tArguments - Three user inputs of 'name' (char array), 'class' (int 0 or 1), 'priority' (0-9)\n";
-	sys_req(WRITE, COM1, createPCB_args, strlen(createPCB_args));
-	char createPCB_desc[] = "Description\n\tThis command will take in user input for a name (less than 10 characters), class and priority\n\tand create a PCB from the given user input values.\n\n";
-	sys_req(WRITE, COM1, createPCB_desc, strlen(createPCB_desc));
+	// Load R3
+	char loadr3_name[] = "Name\n\tLoadR3 - Will load in processes from processes.h.\n";
+	sys_req(WRITE, COM1, loadr3_name, strlen(loadr3_name));
+	char loadr3_desc[] = "Description\n\tThis command takes no user input and will load in any processes within the processes.h file\n\tand will load and queue them into a ready state. It will also save the context for each process.\n\n";
+	sys_req(WRITE, COM1, loadr3_desc, strlen(loadr3_desc));
 	
 	// Delete PCB
 	char deletePCB_name[] = "Name\n\tDeletePCB - Will delete a PCB based on name given by user.\n";

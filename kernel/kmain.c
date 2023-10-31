@@ -5,7 +5,12 @@
 #include <sys_req.h>
 #include <string.h>
 #include <memory.h>
-#include "cmdHandler.h"
+#include <pcb.h>
+#include <pcbuser.h>
+#include <context.h>
+#include <processes.h>
+#include <stdint.h>
+#include <cmdHandler.h>
 
 static void klogv(device dev, const char *msg)
 {
@@ -95,6 +100,47 @@ void kmain(void)
     // R4: __asm__ volatile ("int $0x60" :: "a"(IDLE));
     //__asm__ volatile ("int $0x60" :: "a"(IDLE));
     comhand();
+    
+//    struct pcb* comHand = pcb_setup("comhand", 1, 0);
+//    struct context* ctx = comHand->stack_pointer;
+//    ctx->ds = 0x10;
+//    ctx->es = 0x10;
+//    ctx->fs = 0x10;
+//    ctx->gs = 0x10;
+//    ctx->ss = 0x10;
+//    ctx->eax = 0x00;
+//    ctx->ebx = 0x00;
+//    ctx->ecx = 0x00;
+//    ctx->edx = 0x00;
+//    ctx->esi = 0x00;
+//    ctx->edi = 0x00;
+//    ctx->ebp = (uint32_t)comHand->stack_pointer;
+//    ctx->esp = (uint32_t)comHand->stack_pointer;
+//    ctx->eip = (uint32_t)comhand;
+//    ctx->cs = 0x08;
+//    ctx->eflags = 0x0202;
+//    pcb_insert(comHand);
+
+//    struct pcb* systemIdle = pcb_setup("System IDLE Process", 1, 9);
+//    ctx = systemIdle->stack_pointer;
+//    ctx->ds = 0x10;
+//    ctx->es = 0x10;
+//    ctx->fs = 0x10;
+//    ctx->gs = 0x10;
+//    ctx->ss = 0x10;
+//    ctx->eax = 0x00;
+//    ctx->ebx = 0x00;
+//    ctx->ecx = 0x00;
+//    ctx->edx = 0x00;
+//    ctx->esi = 0x00;
+//    ctx->edi = 0x00;
+//    ctx->ebp = (uint32_t)systemIdle->stack_pointer;
+//    ctx->esp = (uint32_t)systemIdle->stack_pointer;
+//    ctx->eip = (uint32_t)sys_idle_process;
+//    ctx->cs = 0x08;
+//    ctx->eflags = 0x0202;
+//    pcb_insert(systemIdle);
+    
 
     // 10) System Shutdown -- *headers to be determined by your design*
     // After your command handler returns, take care of any clean up that

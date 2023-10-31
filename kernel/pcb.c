@@ -1,5 +1,6 @@
 #include "pcb.h"
-#include "memory.h"  // Assume this header has sys_alloc_mem and sys_free_mem
+#include "memory.h"
+#include "context.h"
 #include <string.h>
 
 
@@ -11,11 +12,11 @@ struct pcb* pcb_allocate(void) {
     struct pcb *new_pcb = (struct pcb*) sys_alloc_mem(sizeof(struct pcb));
     if (new_pcb == NULL) return NULL;
 
-    new_pcb->stack = sys_alloc_mem(1024);
-    if (new_pcb->stack == NULL) {
-        sys_free_mem(new_pcb);
-        return NULL;
-    }
+   //new_pcb->stack = sys_alloc_mem(1024);
+    //if (new_pcb->stack == NULL) {
+        //sys_free_mem(new_pcb);
+        //return NULL;
+    //}
 
     memset(new_pcb->stack, 0, 1024);
     new_pcb->stack_pointer = (void*)((char*)new_pcb->stack + 1020); // Enough to hold a void *
@@ -30,6 +31,7 @@ int pcb_free(struct pcb *pcb_to_free) {
     return 0;
 }
 
+// Sets up a new PCB with initial values
 // Sets up a new PCB with initial values
 struct pcb* pcb_setup(const char *name, int class, int priority) {
     struct pcb *new_pcb = pcb_allocate();
@@ -47,8 +49,16 @@ struct pcb* pcb_setup(const char *name, int class, int priority) {
     new_pcb->exec_state = READY;
     new_pcb->disp_state = NOT_SUSPENDED;
 
+    // Allocate space for context in the stack
+    new_pcb->stack_pointer = &new_pcb->stack[1020] - sizeof(struct context);
+    new_pcb->stack_pointer = (struct context *)new_pcb->stack_pointer;
+
+    // Initialize context to 0 (optional but recommended)
+    memset(new_pcb->stack_pointer, 0, sizeof(struct context));
+
     return new_pcb;
 }
+
 
 // Find PCB by name
 struct pcb* pcb_find(const char *name) {
