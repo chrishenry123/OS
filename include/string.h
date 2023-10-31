@@ -56,4 +56,6 @@ void rtrim(char *str);
 
 char* strncpy(char *dst, const char *src, size_t n);
 
+int snprintf(char *str, size_t size, const char *format, ...);
+
 #endif
