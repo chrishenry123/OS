@@ -13,9 +13,16 @@
 #include <sys_req.h>
 #include <mpx/serial.h>
 #include <stdlib.h>
+#include "yield.h"
 
 #define COM1 0x3F8
 #define MAX_WELCOME_SIZE 1024
+
+void detailed_error1(const char *message, const char *variable_name, int value) {
+    char buffer[512];
+    snprintf(buffer, sizeof(buffer), "%s %s = %d\n", message, variable_name ? variable_name : "", value);
+    sys_req(WRITE, COM1, buffer, strlen(buffer));
+}
 
 typedef struct {
     const char *command_str;
@@ -74,14 +81,28 @@ static menu_t menus[] = {
 static int current_menu = 0;
 
 void generate_welcome_message(char *buf) {
+    if (!buf) {
+        detailed_error1("Error: generate_welcome_message received a NULL buffer.", NULL, 0);
+        return;
+    }
+
     menu_t currentMenu = menus[current_menu];
 
-    strcpy(buf, "Welcome to MPX. ");
+    if (!currentMenu.menu_name || !currentMenu.commands) {
+        detailed_error1("Error: Current menu or commands are not initialized properly.", NULL, 0);
+        return;
+    }
+
+    strcpy(buf, "\nWelcome to MPX. ");
     strcat(buf, currentMenu.menu_name);
     strcat(buf, "\n");
 
     int index = 1;
     for (int i = 0; currentMenu.commands[i].command_str; i++) {
+        if (!currentMenu.commands[i].command_str) {
+            detailed_error1("Error: Command string at index is NULL.", "Index", i);
+            continue;
+        }
         char option[100];
         sprintf(option, "%d) %s\n", index, currentMenu.commands[i].command_str);
         strcat(buf, option);
@@ -147,21 +168,27 @@ void comhand(void) {
 
     char welcome_msg[MAX_WELCOME_SIZE];
     generate_welcome_message(welcome_msg);
+    if (strlen(welcome_msg) == 0) {
+        detailed_error1("Error: Failed to generate welcome message.", NULL, 0);
+        return;
+    }
+
     sys_req(WRITE, COM1, welcome_msg, strlen(welcome_msg));
 
     for (;;) {
         if (shutdown_requested) {
-            break;  // break out of the loop and end the comhand function
+            break;
         }
 
         memset(buf, 0, sizeof(buf));
         int nread = serial_poll(COM1, buf, sizeof(buf) - 1);
 
-        if (nread >= 0) {
-            buf[nread] = '\0';
-        } else {
+        if (nread < 0) {
+            detailed_error1("Error: serial_poll failed to read input.", "Bytes read", nread);
             continue;
         }
+
+        buf[nread] = '\0';
 
         if (buf[nread - 1] == '\n' || buf[nread - 1] == '\r') {
             buf[nread - 1] = '\0';

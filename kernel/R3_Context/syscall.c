@@ -2,8 +2,8 @@
 #include "pcb.h"
 #include <stddef.h>
 
-#define IDLE 0
-#define EXIT 1
+#define IDLE 1
+#define EXIT 0
 
 // global pointer representing the currently executing process
 struct pcb *current_pcb = NULL;
@@ -47,10 +47,10 @@ struct context *sys_call(struct context *ctx) {
             break;
 
         case EXIT:
-            // remove the current pcb
-//            pcb_remove(current_pcb);
-            // free the memory of current pcb
-            pcb_free(current_pcb);
+            if (current_pcb) {
+                pcb_remove(current_pcb);
+                pcb_free(current_pcb);
+            }
 
             // checks if there are any ready, non-suspended PCBs in the queue
             // returns the selected pcb from select-next-process
@@ -61,7 +61,7 @@ struct context *sys_call(struct context *ctx) {
                 // returns the context of the selected pcb
                 return return_context(next_pcb);
             }
-            // loads the original context if pcb q is empty
+                // loads the original context if pcb q is empty
             else {
                 return initial_context;
             }

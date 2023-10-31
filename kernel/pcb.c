@@ -2,81 +2,95 @@
 #include "memory.h"
 #include "context.h"
 #include <string.h>
+#include <sys_req.h>
+
+#define COM1 0x3F8
 
 
 struct pcb *ReadyQueue = NULL;
 struct pcb *BlockedQueue = NULL;
 
-// Allocates memory for a new PCB
+// Utility function to write detailed errors
+void detailed_error(const char *message, const char *variable_name, int value) {
+    char buffer[512];
+    snprintf(buffer, sizeof(buffer), "%s %s = %d\n", message, variable_name ? variable_name : "", value);
+    sys_req(WRITE, COM1, buffer, strlen(buffer));
+}
+
 struct pcb* pcb_allocate(void) {
     struct pcb *new_pcb = (struct pcb*) sys_alloc_mem(sizeof(struct pcb));
-    if (new_pcb == NULL) return NULL;
-
-   //new_pcb->stack = sys_alloc_mem(1024);
-    //if (new_pcb->stack == NULL) {
-        //sys_free_mem(new_pcb);
-        //return NULL;
-    //}
+    if (new_pcb == NULL) {
+        detailed_error("Error: Failed to allocate memory for new PCB.", NULL, 0);
+        return NULL;
+    }
 
     memset(new_pcb->stack, 0, 1024);
-    new_pcb->stack_pointer = (void*)((char*)new_pcb->stack + 1020); // Enough to hold a void *
+    new_pcb->stack_pointer = (void*)((char*)new_pcb->stack + 1020);
     return new_pcb;
 }
 
-// Frees memory associated with a PCB
 int pcb_free(struct pcb *pcb_to_free) {
-    if (pcb_to_free == NULL) return -1;
+    if (pcb_to_free == NULL) {
+        detailed_error("Error: Attempted to free a NULL PCB.", NULL, 0);
+        return -1;
+    }
+
     sys_free_mem(pcb_to_free->stack);
     sys_free_mem(pcb_to_free);
     return 0;
 }
 
-// Sets up a new PCB with initial values
-// Sets up a new PCB with initial values
 struct pcb* pcb_setup(const char *name, int class, int priority) {
-    struct pcb *new_pcb = pcb_allocate();
-    if (new_pcb == NULL || name == NULL || strlen(name) < 1 || strlen(name) > 15 || priority < 0 || priority > 9) {
+    if (name == NULL || strlen(name) < 1 || strlen(name) > 15 || priority < 0 || priority > 9) {
+        detailed_error("Error: Invalid PCB setup parameters.", "Priority", priority);
         return NULL;
     }
-    size_t i;
-    for (i = 0; i < 15 && name[i] != '\0'; ++i) {
-        new_pcb->name[i] = name[i];
-    }
-    new_pcb->name[i] = '\0';  // Null-terminate the copied string
 
+    struct pcb *new_pcb = pcb_allocate();
+    if (new_pcb == NULL) {
+        return NULL;
+    }
+
+    strncpy(new_pcb->name, name, 15);
+    new_pcb->name[15] = '\0';
     new_pcb->class = class;
     new_pcb->priority = priority;
     new_pcb->exec_state = READY;
     new_pcb->disp_state = NOT_SUSPENDED;
-
-    // Allocate space for context in the stack
     new_pcb->stack_pointer = &new_pcb->stack[1020] - sizeof(struct context);
     new_pcb->stack_pointer = (struct context *)new_pcb->stack_pointer;
-
-    // Initialize context to 0 (optional but recommended)
     memset(new_pcb->stack_pointer, 0, sizeof(struct context));
 
     return new_pcb;
 }
 
-
-// Find PCB by name
 struct pcb* pcb_find(const char *name) {
+    if (!name) {
+        detailed_error("Error: Attempted to find PCB with NULL name.", NULL, 0);
+        return NULL;
+    }
+
     struct pcb *current = ReadyQueue;
     while (current) {
         if (strcmp(current->name, name) == 0) return current;
         current = current->next;
     }
+
     current = BlockedQueue;
     while (current) {
         if (strcmp(current->name, name) == 0) return current;
         current = current->next;
     }
+
+    detailed_error("Error: PCB not found in any queue. Searched for:", "Name", (int) *name);
     return NULL;
 }
 
 void pcb_insert(struct pcb* inserted) {
-    if (!inserted) return;  // Guard against null input
+    if (!inserted) {
+        detailed_error("Error: Attempted to insert NULL PCB into queue.", NULL, 0);
+        return;
+    }
 
     struct pcb **queue;
     struct pcb *current;
@@ -84,33 +98,31 @@ void pcb_insert(struct pcb* inserted) {
 
     if (inserted->exec_state == BLOCKED) {
         queue = &BlockedQueue;
-        // Simply push to the front of the BlockedQueue.
         inserted->next = *queue;
         *queue = inserted;
     } else if (inserted->exec_state == READY) {
         queue = &ReadyQueue;
         current = *queue;
-        // Find the correct position based on priority.
         while (current && current->priority <= inserted->priority) {
             prev = current;
             current = current->next;
         }
-        // Insert the new PCB.
         if (prev) {
             prev->next = inserted;
         } else {
-            // If prev is NULL, this means the inserted PCB has higher
-            // priority than all other PCBs, so it should be at the front.
             *queue = inserted;
         }
         inserted->next = current;
+    } else {
+        detailed_error("Error: PCB has invalid exec_state for insertion.", "Exec_state", inserted->exec_state);
     }
 }
 
-
-// Removes a PCB from its current queue
 int pcb_remove(struct pcb *target) {
-    if (target == NULL) return -1;
+    if (!target) {
+        detailed_error("Error: Attempted to remove NULL PCB from queue.", NULL, 0);
+        return -1;
+    }
 
     struct pcb **queue;
 
@@ -119,6 +131,7 @@ int pcb_remove(struct pcb *target) {
     } else if (target->exec_state == BLOCKED) {
         queue = &BlockedQueue;
     } else {
+        detailed_error("Error: PCB has invalid exec_state for removal.", "Exec_state", target->exec_state);
         return -1;
     }
 
@@ -138,5 +151,7 @@ int pcb_remove(struct pcb *target) {
         current = current->next;
     }
 
-    return -1;  // Target not found
+    detailed_error("Error: Target PCB not found in its respective queue.", "Target Name", (int) *target->name);
+    return -1;
 }
+

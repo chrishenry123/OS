@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdarg.h>
 
 /* memcpy() and memset() are in core.c */
 
@@ -126,3 +127,83 @@ char* strncpy(char *dst, const char *src, size_t n) {
 
     return dst;
 }
+
+int mini_itoa(int value, char *sp, int radix) {
+    char tmp[16]; // Assumes 32-bit integer at most
+    char *tp = tmp;
+    int i;
+    unsigned v;
+
+    int sign = (radix == 10 && value < 0);
+    if (sign)
+        v = -value;
+    else
+        v = (unsigned)value;
+
+    while (v || tp == tmp) {
+        i = v % radix;
+        v /= radix;
+        if (i < 10)
+            *tp++ = i + '0';
+        else
+            *tp++ = i + 'a' - 10;
+    }
+
+    int len = tp - tmp;
+
+    if (sp) {
+        if (sign) {
+            *sp++ = '-';
+            len++;
+        }
+        while (tp > tmp)
+            *sp++ = *--tp;
+    }
+
+    return len;
+}
+
+int snprintf(char *str, size_t size, const char *format, ...) {
+    char *sp = str;
+    const char *fp = format;
+    va_list args;
+    va_start(args, format);
+
+    while (*fp && ((size_t)(sp - str) < size)) {
+        if (*fp == '%') {
+            fp++;
+            switch (*fp) {
+                case 's': {
+                    char *s = va_arg(args, char *);
+                    while (*s && ((size_t)(sp - str) < size)) {
+                        *sp++ = *s++;
+                    }
+                    break;
+                }
+                case 'd': {
+                    int d = va_arg(args, int);
+                    sp += mini_itoa(d, sp, 10);
+                    break;
+                }
+                default:
+                    if ((size_t)(sp - str) < size)
+                        *sp++ = *fp;
+                    break;
+            }
+        } else {
+            *sp++ = *fp;
+        }
+        fp++;
+    }
+
+    if ((size_t)(sp - str) < size) {
+        *sp = '\0';
+    } else {
+        str[size - 1] = '\0';
+    }
+
+    va_end(args);
+
+    return sp - str;
+}
+

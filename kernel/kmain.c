@@ -11,6 +11,11 @@
 #include <processes.h>
 #include <stdint.h>
 #include <cmdHandler.h>
+#include <processes.h>
+
+void init_comhand_process(void);
+void init_system_idle_process(void);
+
 
 static void klogv(device dev, const char *msg)
 {
@@ -18,6 +23,62 @@ static void klogv(device dev, const char *msg)
     serial_out(dev, prefix, strlen(prefix));
     serial_out(dev, msg, strlen(msg));
     serial_out(dev, "\r\n", 2);
+}
+
+void init_comhand_process(void) {
+    struct pcb* comHand = pcb_setup("comhand", 1, 0);
+    if (!comHand) {
+        // Handle error
+        klogv(COM1, "Failed to setup comhand process...");
+        return;
+    }
+    struct context* ctx = comHand->stack_pointer;
+    ctx->ds = 0x10;
+    ctx->es = 0x10;
+    ctx->fs = 0x10;
+    ctx->gs = 0x10;
+    ctx->ss = 0x10;
+    ctx->eax = 0x00;
+    ctx->ebx = 0x00;
+    ctx->ecx = 0x00;
+    ctx->edx = 0x00;
+    ctx->esi = 0x00;
+    ctx->edi = 0x00;
+    ctx->ebp = (uint32_t)comHand->stack_pointer;
+    ctx->esp = (uint32_t)comHand->stack_pointer;
+    ctx->eip = (uint32_t)comhand;
+    ctx->cs = 0x08;
+    ctx->eflags = 0x0202;
+    pcb_insert(comHand);
+    klogv(COM1, "Successfully initialized comhand...");
+}
+
+void init_system_idle_process(void) {
+    struct pcb* systemIdle = pcb_setup("Sys IDLE Proc", 1, 9);
+    if (!systemIdle) {
+        // Handle error
+        klogv(COM1, "Failed to setup System IDLE Process...");
+        return;
+    }
+    struct context* ctx = systemIdle->stack_pointer;
+    ctx->ds = 0x10;
+    ctx->es = 0x10;
+    ctx->fs = 0x10;
+    ctx->gs = 0x10;
+    ctx->ss = 0x10;
+    ctx->eax = 0x00;
+    ctx->ebx = 0x00;
+    ctx->ecx = 0x00;
+    ctx->edx = 0x00;
+    ctx->esi = 0x00;
+    ctx->edi = 0x00;
+    ctx->ebp = (uint32_t)systemIdle->stack_pointer;
+    ctx->esp = (uint32_t)systemIdle->stack_pointer;
+    ctx->eip = (uint32_t)sys_idle_process;
+    ctx->cs = 0x08;
+    ctx->eflags = 0x0202;
+    pcb_insert(systemIdle);
+    klogv(COM1, "Successfully initialized system idle process...");
 }
 
 void kmain(void)
@@ -99,48 +160,14 @@ void kmain(void)
     klogv(COM1, "Transferring control to commhand...");
     // R4: __asm__ volatile ("int $0x60" :: "a"(IDLE));
     //__asm__ volatile ("int $0x60" :: "a"(IDLE));
-    comhand();
-    
-//    struct pcb* comHand = pcb_setup("comhand", 1, 0);
-//    struct context* ctx = comHand->stack_pointer;
-//    ctx->ds = 0x10;
-//    ctx->es = 0x10;
-//    ctx->fs = 0x10;
-//    ctx->gs = 0x10;
-//    ctx->ss = 0x10;
-//    ctx->eax = 0x00;
-//    ctx->ebx = 0x00;
-//    ctx->ecx = 0x00;
-//    ctx->edx = 0x00;
-//    ctx->esi = 0x00;
-//    ctx->edi = 0x00;
-//    ctx->ebp = (uint32_t)comHand->stack_pointer;
-//    ctx->esp = (uint32_t)comHand->stack_pointer;
-//    ctx->eip = (uint32_t)comhand;
-//    ctx->cs = 0x08;
-//    ctx->eflags = 0x0202;
-//    pcb_insert(comHand);
+    // Setup Command Handler process
 
-//    struct pcb* systemIdle = pcb_setup("System IDLE Process", 1, 9);
-//    ctx = systemIdle->stack_pointer;
-//    ctx->ds = 0x10;
-//    ctx->es = 0x10;
-//    ctx->fs = 0x10;
-//    ctx->gs = 0x10;
-//    ctx->ss = 0x10;
-//    ctx->eax = 0x00;
-//    ctx->ebx = 0x00;
-//    ctx->ecx = 0x00;
-//    ctx->edx = 0x00;
-//    ctx->esi = 0x00;
-//    ctx->edi = 0x00;
-//    ctx->ebp = (uint32_t)systemIdle->stack_pointer;
-//    ctx->esp = (uint32_t)systemIdle->stack_pointer;
-//    ctx->eip = (uint32_t)sys_idle_process;
-//    ctx->cs = 0x08;
-//    ctx->eflags = 0x0202;
-//    pcb_insert(systemIdle);
-    
+    comhand();
+//    init_comhand_process();
+//    init_system_idle_process();
+//    klogv(COM1, "Before asm...");
+//    __asm__ volatile ("int $0x60" :: "a"(IDLE));
+//    klogv(COM1, "after asm..");
 
     // 10) System Shutdown -- *headers to be determined by your design*
     // After your command handler returns, take care of any clean up that
