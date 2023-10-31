@@ -445,7 +445,7 @@ void display_pcb(struct pcb *target) {
 
 // Shows all PCBs in the Ready state
 void show_ready(void) {
-    char header[] = "====== READY PROCESSES ======\n";
+    char header[] = "\n====== READY PROCESSES ======\n";
     sys_req(WRITE, COM1, header, strlen(header));
 
     struct pcb *current = ReadyQueue;
@@ -466,7 +466,7 @@ void show_ready(void) {
 
 // Shows all PCBs in the Blocked state
 void show_blocked(void) {
-    char header[] = "====== BLOCKED PROCESSES ======\n";
+    char header[] = "\n====== BLOCKED PROCESSES ======\n";
     sys_req(WRITE, COM1, header, strlen(header));
 
     struct pcb *current = BlockedQueue;

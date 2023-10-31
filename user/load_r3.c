@@ -7,18 +7,21 @@
 #include "context.h"
 #include <string.h>
 #include <stdint.h>
+#include <sys_req.h>
 
-// You can customize these names and priorities
+#define COM1 0x3F8
+
 const char* process_names[] = {"Process 1", "Process 2", "Process 3", "Process 4", "Process 5"};
 const int priorities[] = {1, 2, 3, 4, 5};
 
-void (*process_funcs[])(void) = {proc1, proc2, proc3, proc4, proc5};  // Corrected function pointer declaration
+void (*process_funcs[])(void) = {proc1, proc2, proc3, proc4, proc5};
 
 void load_r3(void) {
     for (int i = 0; i < 5; i++) {
         struct pcb *new_pcb = pcb_allocate();
         if (new_pcb == NULL) {
-            // Handle allocation failure, maybe print an error and return
+            char error_msg[] = "Error: Failed to allocate PCB for R3 process.\n";
+            sys_req(WRITE, COM1, error_msg, strlen(error_msg));
             return;
         }
 
@@ -51,4 +54,6 @@ void load_r3(void) {
         // Add the new PCB to the queue
         pcb_insert(new_pcb);
     }
+    char success_msg[] = "\nAll R3 processes have been successfully loaded.\n";
+    sys_req(WRITE, COM1, success_msg, strlen(success_msg));
 }

@@ -39,7 +39,7 @@ void alarm(struct time trigger, char* msg) {
 	sys_req(EXIT);
 }
 
-void get_alarm() {
+void get_alarm(void) {
 
 	// Prompt user to enter the time for the alarm to go off
 	char time_msg[] = "Please enter the time to set the alarm for in the form hh:mm:ss\n";
