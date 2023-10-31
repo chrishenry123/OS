@@ -193,6 +193,36 @@
             <h3>Data Types</h3>
             <p>No custom data types are used.</p>
         </section>
+
+        <!-- sys_call_isr.s -->
+        <section id="sys_call_is">
+            <dt>Pushes the general purpose registers and segment registers onto the stack in the oposite order they are defined in the context struct. </dt> 
+            <dt>Pushes esp onto the stack and then calls the sys_call function, then eax gen register get stored in esp. </dt>
+            <dt>The registers are then popped is the opposite order they are pushed </dt>
+            <dt>iret called to return isr</dt>
+        </section>
+
+        <!-- context struct -->
+        <section id="context.h">
+            <dt>Struct that holds all registers, general, status and segment.</dt>
+        </section>
+
+         <!-- load r3 -->
+        <section id="load_r3.c">
+        <dt> Customizable names and priorites for process that needs loaded. </dt>
+        <dt>New context struct is defined and registers are initilized for the new context, uses pcb header and the context struct </dt>
+        </section>
+
+        <!-- load r3 -->
+        <section id="syscall.c" >
+            <dt>There are 4 helper function prototypes defined at the top, u will find the code at the bottom of this file.</dt>
+            <dt>There are two global variables that are defined at the top that represent the current executing process and the intial context representing the 1st time the file is entered</dt>
+            <dt>checks gen purpose register of the context containing operation code</dt>
+            <dt>There are two main cases, represented and executed with a switch statement. The cases are IDLE or EXIT. If neither of these cases exist -1 is returne.</dt>
+            <dt> The IDLE case checks for ready, non suspended pcbs in the queue. If this exists it stores the selected pcb in a temp variable using a helper function called select_next_process(). </dt>
+        </section>
+
+        
     </div>
 </div>
 
