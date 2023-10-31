@@ -94,6 +94,7 @@ void generate_welcome_message(char *buf) {
 static int shutdown_requested = 0;  // 0 for false, 1 for true
 
 static void process_command(const char *command) {
+
     // Shutdown command
     if (strcmp(command, "shutdown") == 0) {
         char confirm_msg[] = "Are you sure you want to shut down? (y/n): ";

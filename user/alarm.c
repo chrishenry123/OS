@@ -79,7 +79,7 @@ void get_alarm() {
 	}
 	
 	// If we get here the time entered is in the correct format and valid so we can take a message
-	char user_msg[] = "Please enter the time to set the alarm for in the form hh:mm:ss\n";
+	char user_msg[] = "Please enter the message you would like to get at that time\n";
 	sys_req(WRITE, COM1, user_msg, strlen(user_msg));
 	
 	char msg[100] = {0};
