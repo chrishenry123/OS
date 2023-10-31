@@ -37,6 +37,13 @@
             <h3>Version</h3>
             <p>Displays the current version of the MPX Operating System.</p>
             
+            <h3>Alarm</h3>
+            <p>Sets an alarm on the system for a time given by the user.</p>
+            <p>First user will be prompted to enter the hours (Ex. 03).</p>
+	    <p>Then user will be prompted to enter the minutes (Ex. 47).</p>
+	    <p>Finally user will be prompted to enter the seconds (Ex. 50).</p>
+	    <p>An alarm will then be set for that time and will display the message then.</p>
+            
             <h3><u>Time/Date Functions</u></h3>
             <h3>Set Time</h3>
             <p>Sets the system time. Follow the prompts to enter the time.</p>
@@ -57,8 +64,8 @@
             <p>Displays the current system date.</p>
             
             <h3><u>PCB Functions</u></h3>
-            <h3>Create PCB</h3>
-            <p>Takes in user input of a name which must be under 10 characters and can't be a name that is already in use by another PCB. It then requires user input for the class which can either be a 0 or a 1 representing user (0) or system (1) processes. Finally it takes in user input for the PCB priority which can be any integer 0-9 with 0 being the highest and 9 being the lowest. This method uses that information to create a PCB with the specified attributes.</p>
+            <h3>Load R3</h3>
+            <p>This method loads in the processes found in the source code under processes.h. Once this is done the processes are loaded and queued into a ready state. The context will be saved for each process loaded this way.</p>
             
             <h3>Delete PCB</h3>
             <p>This function takes in user input of the name of a PCB to be deleted. The name must be one that exists as a PCB in memory to work properly (elsewise the function will return to the menu screen). Once a valid name is provided the PCB named will be deleted.</p>

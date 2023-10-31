@@ -116,10 +116,6 @@ static int shutdown_requested = 0;  // 0 for false, 1 for true
 
 static void process_command(const char *command) {
 
-    if (!command) {
-        detailed_error1("Error: process_command received a NULL command string.", NULL, 0);
-        return;
-    }
     // Shutdown command
     if (strcmp(command, "shutdown") == 0) {
         char confirm_msg[] = "Are you sure you want to shut down? (y/n): ";
@@ -135,7 +131,7 @@ static void process_command(const char *command) {
         }
         if (strcmp(confirm, "y") == 0) {
             shutdown_requested = 1;  // set the flag true
-            return;
+            sys_req(EXIT);
         }
     } else {
         // Parse the entered command into an integer
