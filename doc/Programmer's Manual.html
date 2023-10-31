@@ -220,6 +220,9 @@
             <dt>checks gen purpose register of the context containing operation code</dt>
             <dt>There are two main cases, represented and executed with a switch statement. The cases are IDLE or EXIT. If neither of these cases exist -1 is returne.</dt>
             <dt> The IDLE case checks for ready, non suspended pcbs in the queue. If this exists it stores the selected pcb in a temp variable using a helper function called select_next_process(). </dt>
+            <dt> The stack pointer is updated with save_context(ctx). This makes sure the current pcb exists and if so returns the stack pointer. </dt>
+            <dt> The alternate case is EXIT (1). It functions as follows.. It frees the memory associated with the recently deleted pcb. Then the first ready, non suspended pcb is loaded </dt>
+            <dt> In case of an empty queue, it will load the original context </dt>
         </section>
 
         
