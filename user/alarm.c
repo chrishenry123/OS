@@ -51,7 +51,7 @@ void get_alarm(void) {
 	
 	// If the time given by the user is not in the correct format, fail out and return
 	if((alarmTime[2] != ':') || (alarmTime[5] != ':')){
-		char errorMsg[] = "Time given for the alarm to go off is not in the proper format hh:mm:ss\n\n";
+		char errorMsg[] = "\033[0;31mTime given for the alarm to go off is not in the proper format hh:mm:ss\n\n";
 		sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
 		return;
 	}
@@ -63,17 +63,17 @@ void get_alarm(void) {
 	
 	// Checks to make sure that the time the user gave is within the range to be valid for an alarm
 	if((hours > 23) || (hours < 0)) {
-		char errorMsg[] = "The hours given is out of the range 0 - 23\n\n";
+		char errorMsg[] = "\033[0;31mThe hours given is out of the range 0 - 23\n\n";
 		sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
 		return;
 	}
 	else if((minutes > 59) || (minutes < 0)) {
-		char errorMsg[] = "The minutes given is out of the range 0 - 59\n\n";
+		char errorMsg[] = "\033[0;31mThe minutes given is out of the range 0 - 59\n\n";
 		sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
 		return;
 	}
 	else if((seconds > 59) || (seconds < 0)) {
-		char errorMsg[] = "The seconds given is out of the range 0 - 59\n\n";
+		char errorMsg[] = "\033[0;31mThe seconds given is out of the range 0 - 59\n\n";
 		sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
 		return;
 	}

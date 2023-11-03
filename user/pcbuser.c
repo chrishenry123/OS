@@ -26,13 +26,13 @@ void create_pcb(void) {
         }
 
         if (strlen(name) > 10) {
-            char nameMsg[] = "Name entered is greater than 10 characters.\n";
+            char nameMsg[] = "\033[0;31mName entered is greater than 10 characters.\n";
             sys_req(WRITE, COM1, nameMsg, strlen(nameMsg));
             continue;
         }
 
         if (pcb_find(name) != NULL) {
-            char nameMsg[] = "Name entered is already in use.\n";
+            char nameMsg[] = "\033[0;31mName entered is already in use.\n";
             sys_req(WRITE, COM1, nameMsg, strlen(nameMsg));
             continue;
         }
@@ -57,7 +57,7 @@ void create_pcb(void) {
             break;
         }
 
-        char errorMsg[] = "User input doesn't match 0 (user) or 1 (system), please try again.\n";
+        char errorMsg[] = "\033[0;31mUser input doesn't match 0 (user) or 1 (system), please try again.\n";
         sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
     }
 
@@ -79,13 +79,13 @@ void create_pcb(void) {
             break;
         }
 
-        char errorMsg[] = "User input is not between 0 and 9, please try again.\n";
+        char errorMsg[] = "\033[0;31mUser input is not between 0 and 9, please try again.\n";
         sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
     }
 
     userPCB = pcb_setup(name, pcbClass, priority);
     if (userPCB == NULL) {
-        char errorMsg[] = "Error in creating PCB.\n";
+        char errorMsg[] = "\033[0;31mError in creating PCB.\n";
         sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
         return; // exit function if pcb creation failed
     }
@@ -118,14 +118,14 @@ void delete_pcb(void) {
 
     // Checks to see if the name exists
     if (!targetPCB) {
-        char nameMsg[] = "Name entered does not exist.\n";
+        char nameMsg[] = "\033[0;31mName entered does not exist.\n";
         sys_req(WRITE, COM1, nameMsg, strlen(nameMsg));
         return;
     }
 
     // Checks to see if the name is a system process
     if (targetPCB->class == 1) {
-        char nameMsg[] = "Name entered is a system process and can't be deleted.\n";
+        char nameMsg[] = "\033[0;31mName entered is a system process and can't be deleted.\n";
         sys_req(WRITE, COM1, nameMsg, strlen(nameMsg));
         return;
     }
@@ -156,19 +156,19 @@ void block_pcb(void) {
 
     struct pcb* block_pcb = pcb_find(name);
     if (block_pcb == NULL) {
-        char nameMsg[] = "Name entered does not exist.\n";
+        char nameMsg[] = "\033[0;31mName entered does not exist.\n";
         sys_req(WRITE, COM1, nameMsg, strlen(nameMsg));
         return;
     }
 
     if (block_pcb->class == SYSTEM_PROCESS) {
-        char errorMsg[] = "The entered name corresponds to a system process and cannot be blocked.\n";
+        char errorMsg[] = "\033[0;31mThe entered name corresponds to a system process and cannot be blocked.\n";
         sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
         return;
     }
 
     if (block_pcb->exec_state == BLOCKED) {
-        char errorMsg[] = "The process is already in the blocked state.\n";
+        char errorMsg[] = "\033[0;31mThe process is already in the blocked state.\n";
         sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
         return;
     }
@@ -196,13 +196,13 @@ void unblock_pcb(void) {
 
     struct pcb* unblock_pcb = pcb_find(name);
     if (unblock_pcb == NULL) {
-        char nameMsg[] = "Name entered does not exist.\n";
+        char nameMsg[] = "\033[0;31mName entered does not exist.\n";
         sys_req(WRITE, COM1, nameMsg, strlen(nameMsg));
         return;
     }
 
     if (unblock_pcb->exec_state == READY) {
-        char errorMsg[] = "The process is already in the unblocked (or ready) state.\n";
+        char errorMsg[] = "\033[0;31mThe process is already in the unblocked (or ready) state.\n";
         sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
         return;
     }
@@ -233,13 +233,13 @@ void suspend_pcb(void) {
 
     // Checks if the PCB exists
     if(pcb_find(name) == NULL) {
-        char nameMsg[] = "Name entered does not exist.\n";
+        char nameMsg[] = "\033[0;31mName entered does not exist.\n";
         sys_req(WRITE, COM1, nameMsg, strlen(nameMsg));
         return;
     }
         // Check if the process is a system process
     else if(pcb_find(name)->class == 1) {
-        char sysMsg[] = "A system process can't be suspended.\n";
+        char sysMsg[] = "\033[0;31mA system process can't be suspended.\n";
         sys_req(WRITE, COM1, sysMsg, strlen(sysMsg));
         return;
     }
@@ -279,14 +279,14 @@ void resume_pcb(void) {
     // Checks if the PCB exists
     struct pcb* resume_pcb = pcb_find(name);
     if (resume_pcb == NULL) {
-        char nameMsg[] = "Name entered does not exist.\n";
+        char nameMsg[] = "\033[0;31mName entered does not exist.\n";
         sys_req(WRITE, COM1, nameMsg, strlen(nameMsg));
         return;
     }
 
     // Check if the process is already in the not suspended state
     if (resume_pcb->disp_state == 0) {
-        char errorMsg[] = "The process is already in the not suspended state.\n";
+        char errorMsg[] = "\033[0;31mThe process is already in the not suspended state.\n";
         sys_req(WRITE, COM1, errorMsg, strlen(errorMsg));
         return;
     }
@@ -323,7 +323,7 @@ void set_priority(void) {
     // Checks if the PCB exists
     struct pcb* targetPCB = pcb_find(name);
     if (targetPCB == NULL) {
-        char nameMsg[] = "Name entered does not exist.\n";
+        char nameMsg[] = "\033[0;31mName entered does not exist.\n";
         sys_req(WRITE, COM1, nameMsg, strlen(nameMsg));
         return;
     }
@@ -338,14 +338,14 @@ void set_priority(void) {
     // Convert priority input to integer and validate
     priority = atoi(priorityInput);
     if (priority < 0 || priority > 9) {
-        char invalidMsg[] = "Invalid priority. Priority must be between 0 and 9.\n";
+        char invalidMsg[] = "\033[0;31mInvalid priority. Priority must be between 0 and 9.\n";
         sys_req(WRITE, COM1, invalidMsg, strlen(invalidMsg));
         return;
     }
 
     // Remove the PCB from its current queue
     if (pcb_remove(targetPCB) == -1) {
-        char errMsg[] = "Error removing PCB from queue.\n";
+        char errMsg[] = "\033[0;31mError removing PCB from queue.\n";
         sys_req(WRITE, COM1, errMsg, strlen(errMsg));
         return;
     }
@@ -378,7 +378,7 @@ void show_pcb(void) {
 
     // Checks if the PCB exists
     if(showtarget == NULL) {
-        char nameMsg[] = "Name entered does not exist.\n";
+        char nameMsg[] = "\033[0;31mName entered does not exist.\n";
         sys_req(WRITE, COM1, nameMsg, strlen(nameMsg));
         return;
     }
