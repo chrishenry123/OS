@@ -20,7 +20,7 @@ void load_r3(void) {
     for (int i = 0; i < 5; i++) {
         struct pcb *new_pcb = pcb_allocate();
         if (new_pcb == NULL) {
-            char error_msg[] = "Error: Failed to allocate PCB for R3 process.\n";
+            char error_msg[] = "\033[0;31mError: Failed to allocate PCB for R3 process.\n";
             sys_req(WRITE, COM1, error_msg, strlen(error_msg));
             return;
         }
