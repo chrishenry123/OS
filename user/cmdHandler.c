@@ -41,7 +41,7 @@ static command_map_t main_commands[] = {
         {"Time/Date Functions", NULL, "Navigating to Time/Date Functions...\n", 1},
         {"PCB Functions", NULL, "Navigating to PCB Functions...\n", 2},
         {"Version", version, "Displaying Version...\n", -1},
-//        {"Yield", yield, "Yielding current process...\n", -1}, REMOVED FOR M4
+        {"Yield", yield, "Yielding current process...\n", -1},
         {"Alarm", get_alarm, "Setting Alarm...\n", -1},
         {NULL, NULL, NULL, -1}
 };
@@ -131,7 +131,6 @@ static void process_command(const char *command) {
         }
         if (strcmp(confirm, "y") == 0) {
             shutdown_requested = 1;  // set the flag true
-            sys_req(EXIT);
         }
     } else {
         // Parse the entered command into an integer

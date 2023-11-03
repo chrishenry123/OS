@@ -41,7 +41,7 @@ void load_r3(void) {
         new_context->ss = 0x10;
         // Adjusted these lines to use the correct fields
         new_context->esp = (uint32_t)(new_pcb->stack_pointer);
-        new_context->ebp = (uint32_t)(new_pcb->stack_pointer);
+        new_context->ebp = (uint32_t)(new_pcb->stack);
         new_context->eip = (uint32_t)process_funcs[i];
         new_context->eflags = 0x0202;
         new_context->eax = 0;

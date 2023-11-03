@@ -2,115 +2,100 @@
 #include "pcb.h"
 #include <stddef.h>
 
-#define IDLE 1
-#define EXIT 0
+#define IDLE 0
+#define EXIT 1
 
-// global pointer representing the currently executing process
-struct pcb *current_pcb = NULL;
-// static context pointer representing the context from the first time syscall() is entered
-// changing stuff to stack pointer
+// Global variables
+static struct pcb *current_pcb = NULL;
 static struct context *initial_context = NULL;
 
 // Function prototypes
 static void save_context(struct context *ctx);
 static struct pcb* select_next_process(void);
-static struct context* return_context(struct pcb *pcb);
+static struct context* restore_context(struct pcb *pcb);
 static int sys_req_idle(void);
 
-// system call implementation
-// takes one param - the context of the current process (pointer)
+// System call implementation
 struct context *sys_call(struct context *ctx) {
-    // checks gen purpose register of the context containing operation code
-    switch(ctx->eax) {
-        // case for idle
-        case IDLE:
-            // if the initial context is null set it to point to the context provided
-            if (initial_context == NULL){
-                initial_context = ctx;
-            }
-            // checks if there are any ready, non-suspended PCBs in the queue
-            if (sys_req_idle() == 0) {
-                // removes the 1st ready non suspended pcb from the q and stores it in temp variable
-                struct pcb *next_pcb = select_next_process();
-
-                // updates the stack pointer
-                save_context(ctx);
-
-                if (next_pcb) {
-                    current_pcb = next_pcb;
-                    return return_context(next_pcb);
-                }
-                else {
-                    return ctx;
-                }
-            }
-            break;
-
-        case EXIT:
-            if (current_pcb) {
-                pcb_remove(current_pcb);
-                pcb_free(current_pcb);
-            }
-
-            // checks if there are any ready, non-suspended PCBs in the queue
-            // returns the selected pcb from select-next-process
-            struct pcb *next_pcb = select_next_process();
-            if (next_pcb) {
-                current_pcb = next_pcb;
-
-                // returns the context of the selected pcb
-                return return_context(next_pcb);
-            }
-                // loads the original context if pcb q is empty
-            else {
-                return initial_context;
-            }
-            break;
-
-            //if the op code is not idle or exit set return value to -1
-        default:
-            ctx->eax = -1;
-            return ctx;
+    if (!ctx) {
+        // Handle the case where the context passed in is NULL
+        return NULL;
     }
 
-    ctx->eax = 0;
-    return ctx;
+    // Save the initial context if this is the first syscall
+    if (!initial_context) {
+        initial_context = ctx;
+    }
+
+    switch (ctx->eax) {
+        case IDLE:
+            // IDLE syscall handling
+            if (sys_req_idle() == 0) {
+                save_context(ctx); // Save the current context
+                struct pcb *next_pcb = select_next_process();
+                if (next_pcb) {
+                    current_pcb = next_pcb; // Switch to the next process
+                    return restore_context(next_pcb); // Restore the context of the next process
+                }
+            }
+            ctx->eax = 0; // Return value seen by sys_req() is 0
+            return ctx; // Continue with the current context if no process is ready
+
+        case EXIT:
+            // EXIT syscall handling
+            if (current_pcb) {
+                // Remove the current process and free its resources
+                pcb_remove(current_pcb);
+                pcb_free(current_pcb);
+                current_pcb = NULL; // Clear the current PCB
+            }
+
+            struct pcb *next_pcb = select_next_process();
+            if (next_pcb) {
+                current_pcb = next_pcb; // Update the current process
+                return restore_context(next_pcb); // Restore the context of the next process
+            } else {
+                // If there are no more processes, return to the initial context
+                ctx->eax = 0; // Return value seen by sys_req() is 0
+                return initial_context;
+            }
+
+        default:
+            // Unsupported system call operation
+            ctx->eax = -1; // Set an error code
+            return ctx; // Return the same context to indicate an error
+    }
 }
 
 static int sys_req_idle(void) {
     struct pcb *current = ReadyQueue;
-    // search fot pcb that is ready and not suspended
     while (current) {
         if (current->exec_state == READY && current->disp_state == NOT_SUSPENDED) {
-            return 0;
+            return 0; // Found a process that is ready and not suspended
         }
         current = current->next;
     }
-
-    return -1;
+    return -1; // No ready and non-suspended processes
 }
 
 static struct pcb* select_next_process(void) {
-    // variable to store selected process
     struct pcb *selected_pcb = NULL;
-    // makes sure ReadyQueue is not empty, execution state is ready and the dispatch state is not suspended
     if (ReadyQueue && ReadyQueue->exec_state == READY && ReadyQueue->disp_state == NOT_SUSPENDED) {
         selected_pcb = ReadyQueue;
-        pcb_remove(ReadyQueue);
+        pcb_remove(ReadyQueue); // Assume pcb_remove() removes the PCB from the queue
     }
     return selected_pcb;
 }
-// returns the context
-static struct context* return_context(struct pcb *pcb) {
+
+static struct context* restore_context(struct pcb *pcb) {
     if (!pcb) {
         return NULL;
     }
-    return pcb->stack_pointer;
+    return pcb->stack_pointer; // Assume pcb->stack_pointer stores the context
 }
 
-// updates stack pointer
 static void save_context(struct context *ctx) {
     if (current_pcb) {
-        current_pcb->stack_pointer = ctx;
+        current_pcb->stack_pointer = ctx; // Save the current context to the PCB
     }
 }

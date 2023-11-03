@@ -60,7 +60,7 @@ void init_system_idle_process(void) {
         klogv(COM1, "Failed to setup System IDLE Process...");
         return;
     }
-    struct context* ctx = systemIdle->stack_pointer;
+    struct context* ctx = (struct context *)systemIdle->stack_pointer;
     ctx->ds = 0x10;
     ctx->es = 0x10;
     ctx->fs = 0x10;
@@ -72,7 +72,7 @@ void init_system_idle_process(void) {
     ctx->edx = 0x00;
     ctx->esi = 0x00;
     ctx->edi = 0x00;
-    ctx->ebp = (uint32_t)systemIdle->stack_pointer;
+    ctx->ebp = (uint32_t)systemIdle->stack;
     ctx->esp = (uint32_t)systemIdle->stack_pointer;
     ctx->eip = (uint32_t)sys_idle_process;
     ctx->cs = 0x08;
@@ -163,11 +163,11 @@ void kmain(void)
     // Setup Command Handler process
 
     comhand();
-//    init_comhand_process();
-//    init_system_idle_process();
-//    klogv(COM1, "Before asm...");
-//    __asm__ volatile ("int $0x60" :: "a"(IDLE));
-//    klogv(COM1, "after asm..");
+   //init_comhand_process();
+  //  init_system_idle_process();
+   // klogv(COM1, "Before asm...");
+    //__asm__ volatile ("int $0x60" :: "a"(IDLE));
+    // klogv(COM1, "after asm..");
 
     // 10) System Shutdown -- *headers to be determined by your design*
     // After your command handler returns, take care of any clean up that
