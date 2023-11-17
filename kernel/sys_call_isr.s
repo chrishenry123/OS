@@ -7,18 +7,18 @@ extern sys_call         ; The C function that sys_call_isr will call
 
 sys_call_isr:
     ; Push general-purpose and segment registers
-    push ebp
-    push edi
-    push esi
-    push edx
-    push ecx
-    push ebx
     push eax
+    push ecx
+    push edx
+    push ebx
+    push ebp
+    push esi
+    push edi
     push ss
-    push gs
-    push fs
-    push es
     push ds
+    push es
+    push fs
+    push gs
 
 
     ; Push ESP onto the stack
@@ -32,18 +32,18 @@ sys_call_isr:
     mov esp, eax
 
     ; Pop segment and general-purpose registers
-    pop ds
-    pop es
-    pop fs
     pop gs
+    pop fs
+    pop es
+    pop ds
     pop ss
-    pop eax
-    pop ebx
-    pop ecx
-    pop edx
-    pop esi
     pop edi
+    pop esi
     pop ebp
+    pop ebx
+    pop edx
+    pop ecx
+    pop eax
 
 
     ; Return from ISR

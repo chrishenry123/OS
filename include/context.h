@@ -7,9 +7,8 @@
 
 
 struct context {
-    unsigned int  ds, es, fs, gs, ss, eax, ebx, ecx, edx, esi, edi, ebp, esp, eip, cs, eflags;
+    int gs, fs, es, ds, ss, edi, esi, ebp, ebx, edx, ecx, eax, eip, cs, eflags;
 };
-
 
 
 #endif //FIJI_CONTEXT_H

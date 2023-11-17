@@ -44,9 +44,8 @@ void init_comhand_process(void) {
     ctx->edx = 0x00;
     ctx->esi = 0x00;
     ctx->edi = 0x00;
-    ctx->ebp = (uint32_t)comHand->stack;
-    ctx->esp = (uint32_t)comHand->stack_pointer;
-    ctx->eip = (uint32_t)comhand;
+    ctx->ebp = (int)comHand->stack;
+    ctx->eip = (unsigned int)comhand;
     ctx->cs = 0x08;
     ctx->eflags = 0x0202;
     pcb_insert(comHand);
@@ -72,9 +71,8 @@ void init_system_idle_process(void) {
     ctx->edx = 0x00;
     ctx->esi = 0x00;
     ctx->edi = 0x00;
-    ctx->ebp = (uint32_t)systemIdle->stack;
-    ctx->esp = (uint32_t)systemIdle->stack_pointer;
-    ctx->eip = (uint32_t)sys_idle_process;
+    ctx->ebp = (int)systemIdle->stack;
+    ctx->eip = (unsigned int)sys_idle_process;
     ctx->cs = 0x08;
     ctx->eflags = 0x0202;
     pcb_insert(systemIdle);
