@@ -44,7 +44,7 @@ void init_comhand_process(void) {
     ctx->edx = 0x00;
     ctx->esi = 0x00;
     ctx->edi = 0x00;
-    ctx->ebp = (uint32_t)comHand->stack_pointer;
+    ctx->ebp = (uint32_t)comHand->stack;
     ctx->esp = (uint32_t)comHand->stack_pointer;
     ctx->eip = (uint32_t)comhand;
     ctx->cs = 0x08;
@@ -162,12 +162,12 @@ void kmain(void)
     //__asm__ volatile ("int $0x60" :: "a"(IDLE));
     // Setup Command Handler process
 
-    comhand();
-   //init_comhand_process();
-  //  init_system_idle_process();
-   // klogv(COM1, "Before asm...");
-    //__asm__ volatile ("int $0x60" :: "a"(IDLE));
-    // klogv(COM1, "after asm..");
+    //comhand();
+    init_comhand_process();
+    init_system_idle_process();
+    klogv(COM1, "Before asm...");
+    __asm__ volatile ("int $0x60" :: "a"(IDLE));
+     klogv(COM1, "after asm..");
 
     // 10) System Shutdown -- *headers to be determined by your design*
     // After your command handler returns, take care of any clean up that
