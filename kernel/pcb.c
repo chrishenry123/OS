@@ -1,6 +1,6 @@
 #include "pcb.h"
 #include "memory.h"
-#include "context.h"
+#include <context.h>
 #include <string.h>
 #include <sys_req.h>
 
@@ -25,14 +25,15 @@ struct pcb* pcb_allocate(void) {
     }
 
     memset(new_pcb->stack, 0, 1024);
-    new_pcb->stack_pointer = (void*)((char*)new_pcb->stack + 1020 - sizeof(struct context));
+    new_pcb->stack_pointer = (void*)(new_pcb->stack + 1020 - sizeof(struct context));
     return new_pcb;
 }
 
 int pcb_free(struct pcb *pcb_to_free) {
-   if (pcb_to_free == NULL) {
-      detailed_error("Error: Attempted to free a NULL PCB.", NULL, 0);
-      return -1;
+
+    if (pcb_to_free == NULL) {
+        detailed_error("Error: Attempted to free a NULL PCB.", NULL, 0);
+        return -1;
     }
 
     sys_free_mem(pcb_to_free->stack);
@@ -57,8 +58,8 @@ struct pcb* pcb_setup(const char *name, int class, int priority) {
     new_pcb->priority = priority;
     new_pcb->exec_state = READY;
     new_pcb->disp_state = NOT_SUSPENDED;
-    new_pcb->stack_pointer = new_pcb->stack + 1022 - sizeof(struct context);
-
+    new_pcb->stack_pointer = &new_pcb->stack[1020] - sizeof(struct context);
+    new_pcb->stack_pointer = (struct context *)new_pcb->stack_pointer;
     memset(new_pcb->stack_pointer, 0, sizeof(struct context));
 
     return new_pcb;
@@ -154,4 +155,3 @@ int pcb_remove(struct pcb *target) {
     detailed_error("Error: Target PCB not found in its respective queue.", "Target Name", (int) *target->name);
     return -1;
 }
-

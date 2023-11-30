@@ -45,6 +45,7 @@ void init_comhand_process(void) {
     ctx->esi = 0x00;
     ctx->edi = 0x00;
     ctx->ebp = (int)comHand->stack;
+    //ctx->esp = (int)comHand->stack_pointer;
     ctx->eip = (unsigned int)comhand;
     ctx->cs = 0x08;
     ctx->eflags = 0x0202;
@@ -72,6 +73,7 @@ void init_system_idle_process(void) {
     ctx->esi = 0x00;
     ctx->edi = 0x00;
     ctx->ebp = (int)systemIdle->stack;
+    //ctx->esp = (int)systemIdle->stack_pointer;
     ctx->eip = (unsigned int)sys_idle_process;
     ctx->cs = 0x08;
     ctx->eflags = 0x0202;
@@ -156,16 +158,18 @@ void kmain(void)
     // Pass execution to your command handler so the user can interact with
     // the system.
     klogv(COM1, "Transferring control to commhand...");
-    // R4: __asm__ volatile ("int $0x60" :: "a"(IDLE));
+    // i uncommented this for r4
+
+    //__asm__ volatile ("int $0x60" :: "a"(IDLE));
     //__asm__ volatile ("int $0x60" :: "a"(IDLE));
     // Setup Command Handler process
 
-    //comhand();
+    comhand();
     init_comhand_process();
     init_system_idle_process();
     klogv(COM1, "Before asm...");
     __asm__ volatile ("int $0x60" :: "a"(IDLE));
-     klogv(COM1, "after asm..");
+    klogv(COM1, "after asm..");
 
     // 10) System Shutdown -- *headers to be determined by your design*
     // After your command handler returns, take care of any clean up that
