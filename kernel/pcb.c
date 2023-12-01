@@ -24,8 +24,8 @@ struct pcb* pcb_allocate(void) {
         return NULL;
     }
 
-    memset(new_pcb->stack, 0, 1024);
-    new_pcb->stack_pointer = (void*)(new_pcb->stack + 1020 - sizeof(struct context));
+    memset(new_pcb->stack, 0, 2048);
+    new_pcb->stack_pointer = (void*)(new_pcb->stack + 2040 - sizeof(struct context));
     return new_pcb;
 }
 

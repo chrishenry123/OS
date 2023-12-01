@@ -191,6 +191,9 @@ void comhand(void) {
         }
 
         memset(buf, 0, sizeof(buf));
+
+
+
         int nread = serial_poll(COM1, buf, sizeof(buf) - 1);
 
         if (nread < 0) {
