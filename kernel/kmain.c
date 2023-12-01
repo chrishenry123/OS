@@ -26,6 +26,12 @@ static void klogv(device dev, const char *msg)
     serial_out(dev, "\r\n", 2);
 }
 
+void startup_sequence(void){
+    char logo[] = "\n\n  \033[0;34m====\033[0;37m\n /    \\\n/      \\\n|      |\n| \033[0;31mFIJI\033[0;37m |\n|      |\n|      |\n|______|\n\n";
+    sys_req(WRITE, COM1, logo, strlen(logo));
+}
+
+
 void init_comhand_process(void) {
     struct pcb* comHand = pcb_setup("comhand", 1, 0);
     if (!comHand) {
@@ -170,6 +176,9 @@ void kmain(void)
     //comhand();
     init_system_idle_process();
     init_comhand_process();
+    
+    startup_sequence();
+    
     __asm__ volatile ("int $0x60" :: "a"(IDLE));
 
     // 10) System Shutdown -- *headers to be determined by your design*
