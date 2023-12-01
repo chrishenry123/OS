@@ -132,8 +132,9 @@ static void process_command(const char *command) {
         }
         if (strcmp(confirm, "y") == 0) {
             shutdown_requested = 1;  // set the flag true
-           sys_req(EXIT);
-           //return;
+            // r4
+            sys_req(EXIT);
+            //return;
         }
     } 
     // Clear Command

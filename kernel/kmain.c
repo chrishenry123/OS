@@ -13,6 +13,7 @@
 #include <cmdHandler.h>
 #include <processes.h>
 
+
 void init_comhand_process(void);
 void init_system_idle_process(void);
 
@@ -33,22 +34,22 @@ void init_comhand_process(void) {
         return;
     }
     struct context* ctx = comHand->stack_pointer;
+    ctx->cs = 0x08;
     ctx->ds = 0x10;
     ctx->es = 0x10;
     ctx->fs = 0x10;
     ctx->gs = 0x10;
     ctx->ss = 0x10;
+    ctx->ebp = (int)comHand->stack;
+    ctx->esp = (int)comHand->stack_pointer;
+    ctx->eip = (int)comhand;
+    ctx->eflags = 0x0202;
     ctx->eax = 0x00;
     ctx->ebx = 0x00;
     ctx->ecx = 0x00;
     ctx->edx = 0x00;
     ctx->esi = 0x00;
     ctx->edi = 0x00;
-    ctx->ebp = (int)comHand->stack;
-    //ctx->esp = (int)comHand->stack_pointer;
-    ctx->eip = (unsigned int)comhand;
-    ctx->cs = 0x08;
-    ctx->eflags = 0x0202;
     pcb_insert(comHand);
     klogv(COM1, "Successfully initialized comhand...");
 }
@@ -61,25 +62,27 @@ void init_system_idle_process(void) {
         return;
     }
     struct context* ctx = (struct context *)systemIdle->stack_pointer;
+    ctx->cs = 0x08;
     ctx->ds = 0x10;
     ctx->es = 0x10;
     ctx->fs = 0x10;
     ctx->gs = 0x10;
     ctx->ss = 0x10;
+    ctx->ebp = (int)systemIdle->stack;
+    ctx->esp = (int)systemIdle->stack_pointer;
+    ctx->eip = (int)sys_idle_process;
+    ctx->eflags = 0x0202;
     ctx->eax = 0x00;
     ctx->ebx = 0x00;
     ctx->ecx = 0x00;
     ctx->edx = 0x00;
     ctx->esi = 0x00;
     ctx->edi = 0x00;
-    ctx->ebp = (int)systemIdle->stack;
-    //ctx->esp = (int)systemIdle->stack_pointer;
-    ctx->eip = (unsigned int)sys_idle_process;
-    ctx->cs = 0x08;
-    ctx->eflags = 0x0202;
+    //ctx->cs = 0x08;
     pcb_insert(systemIdle);
     klogv(COM1, "Successfully initialized system idle process...");
 }
+
 
 void kmain(void)
 {
@@ -164,9 +167,9 @@ void kmain(void)
     //__asm__ volatile ("int $0x60" :: "a"(IDLE));
     // Setup Command Handler process
 
-    comhand();
-    init_comhand_process();
+    //comhand();
     init_system_idle_process();
+    init_comhand_process();
     __asm__ volatile ("int $0x60" :: "a"(IDLE));
 
     // 10) System Shutdown -- *headers to be determined by your design*
