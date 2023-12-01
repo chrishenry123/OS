@@ -167,9 +167,7 @@ void kmain(void)
     comhand();
     init_comhand_process();
     init_system_idle_process();
-    klogv(COM1, "Before asm...");
     __asm__ volatile ("int $0x60" :: "a"(IDLE));
-    klogv(COM1, "after asm..");
 
     // 10) System Shutdown -- *headers to be determined by your design*
     // After your command handler returns, take care of any clean up that

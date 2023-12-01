@@ -15,7 +15,7 @@ const int priorities[] = {1, 2, 3, 4, 5};
 void (*process_funcs[])(void) = {proc1, proc2, proc3, proc4, proc5};
 
 void load_r3(void) {
-    for (int i = 0; i <=0; i++) {
+    for (int i = 0; i < 5; i++) {
         struct pcb *new_pcb = pcb_allocate();
         if (new_pcb == NULL) {
             char error_msg[] = "Error: Failed to allocate PCB for R3 process.\n";
