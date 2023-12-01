@@ -74,7 +74,7 @@ static command_map_t pcb_commands[] = {
 };
 
 static menu_t menus[] = {
-        {"Main Menu", main_commands},
+        {"\033[0;34mMain Menu\033[0;37m", main_commands},
         {"Time/Date Menu", time_date_commands},
         {"PCB Menu", pcb_commands}
 };
@@ -94,14 +94,14 @@ void generate_welcome_message(char *buf) {
         return;
     }
 
-    strcpy(buf, "\nWelcome to MPX. ");
+    strcpy(buf, "\n\033[0;34mWelcome to MPX.\033[0;37m ");
     strcat(buf, currentMenu.menu_name);
     strcat(buf, "\n");
 
     int index = 1;
     for (int i = 0; currentMenu.commands[i].command_str; i++) {
         if (!currentMenu.commands[i].command_str) {
-            detailed_error1("Error: Command string at index is NULL.", "Index", i);
+            detailed_error1("\033[0;31mError: Command string at index is NULL.", "Index", i);
             continue;
         }
         char option[100];
@@ -110,7 +110,7 @@ void generate_welcome_message(char *buf) {
         index++;
     }
 
-    strcat(buf, "Enter choice: ");
+    strcat(buf, "\033[0;36mEnter choice: \033[0;37m");
 }
 
 static int shutdown_requested = 0;  // 0 for false, 1 for true
@@ -135,18 +135,25 @@ static void process_command(const char *command) {
            // sys_req(EXIT); R4
            return;
         }
+    } 
+    // Clear Command
+    else if(strcmp(command, "clear") == 0) {
+    	const char *clearCode = "\x1b[2J\x1b[H";
+    	sys_req(WRITE, COM1, clearCode, strlen(clearCode));
+    	current_menu = 0;
+    	
     } else {
         // Parse the entered command into an integer
         int choice = atoi(command);
         if (choice <= 0) {
-            char error_msg[] = "Invalid choice. Please enter a valid number.\n";
+            char error_msg[] = "\033[0;31mInvalid choice. Please enter a valid number.\n";
             sys_req(WRITE, COM1, error_msg, strlen(error_msg));
             return;
         }
 
         menu_t currentMenu = menus[current_menu];
         if (currentMenu.commands[choice - 1].command_str == NULL) {
-            char error_msg[] = "Invalid choice. Please enter a valid number.\n";
+            char error_msg[] = "\033[0;31mInvalid choice. Please enter a valid number.\n";
             sys_req(WRITE, COM1, error_msg, strlen(error_msg));
             return;
         }
@@ -171,7 +178,7 @@ void comhand(void) {
     char welcome_msg[MAX_WELCOME_SIZE];
     generate_welcome_message(welcome_msg);
     if (strlen(welcome_msg) == 0) {
-        detailed_error1("Error: Failed to generate welcome message.", NULL, 0);
+        detailed_error1("\033[0;31mError: Failed to generate welcome message.", NULL, 0);
         return;
     }
 
@@ -186,7 +193,7 @@ void comhand(void) {
         int nread = serial_poll(COM1, buf, sizeof(buf) - 1);
 
         if (nread < 0) {
-            detailed_error1("Error: serial_poll failed to read input.", "Bytes read", nread);
+            detailed_error1("\033[0;31mError: serial_poll failed to read input.", "Bytes read", nread);
             continue;
         }
 
