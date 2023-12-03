@@ -42,7 +42,7 @@ static command_map_t main_commands[] = {
         {"Time/Date Functions", NULL, "Navigating to Time/Date Functions...\n", 1},
         {"PCB Functions", NULL, "Navigating to PCB Functions...\n", 2},
         {"Version", version, "Displaying Version...\n", -1},
-        {"Yield",yield, "Yielding current process...\n", -1},
+//        {"Yield",yield, "Yielding current process...\n", -1},
         {"Alarm", get_alarm, "Setting Alarm...\n", -1},
         {NULL, NULL, NULL, -1}
 };
