@@ -25,7 +25,7 @@ struct pcb {
     int priority;             // Process priority
     int exec_state;           // Execution state
     int disp_state;           // Dispatching state
-    char stack[1024];         // Pointer to the process stack
+    char stack[6700];         // Pointer to the process stack
     void *stack_pointer;      // Stack pointer
     struct pcb *next;         // Pointer to the next PCB for building queues
 //    struct context *context;

@@ -123,19 +123,19 @@ void setTime(void){
     secs = atoi(userSec);
 
     if(secs < 0 || secs > 59) {
-    	char secsError[] = "Error: Seconds is out of the range 00 - 59\n\n";
+    	char secsError[] = "\033[0;31mError: Seconds is out of the range 00 - 59\n\n";
 	sys_req(WRITE, COM1, secsError, strlen(secsError));
 	return;
     }
     
     if(mins < 0 || mins > 59) {
-    	char minsError[] = "Error: Minutes is out of the range 00 - 59\n\n";
+    	char minsError[] = "\033[0;31mError: Minutes is out of the range 00 - 59\n\n";
 	sys_req(WRITE, COM1, minsError, strlen(minsError));
 	return;
     }
     
     if(hours < 0 || hours > 23) {
-    	char hourError[] = "Error: Hours is out of the range 00 - 23\n\n";
+    	char hourError[] = "\033[0;31mError: Hours is out of the range 00 - 23\n\n";
 	sys_req(WRITE, COM1, hourError, strlen(hourError));
 	return;
     }
@@ -248,7 +248,7 @@ void setDate(void){
 
 	// Check for if the year is valid
 	if(year < 0 || year > 99) {
-		char yearError[] = "Error: Year is out of the range 00 - 99\n\n";
+		char yearError[] = "\033[0;31mError: Year is out of the range 00 - 99\n\n";
 		sys_req(WRITE, COM1, yearError, strlen(yearError));
 		return;
 	}
@@ -260,7 +260,7 @@ void setDate(void){
 
 	// Checks if month is valid
 	if(month < 1 || month > 12) {
-		char monthError[] = "Error: Month is out of the range 01 - 12\n\n";
+		char monthError[] = "\033[0;31mError: Month is out of the range 01 - 12\n\n";
 		sys_req(WRITE, COM1, monthError, strlen(monthError));
 		return;
 	}
@@ -301,7 +301,7 @@ void setDate(void){
 
 	// Check if the day given is valid based on the month
 	if(day < 1 || day > daysInMonth) {
-		char dayError[] = "Error: Day is out of the range for the month that was given\n\n";
+		char dayError[] = "\033[0;31mError: Day is out of the range for the month that was given\n\n";
 		sys_req(WRITE, COM1, dayError, strlen(dayError));
 		return;
 	}

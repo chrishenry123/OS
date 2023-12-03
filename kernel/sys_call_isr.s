@@ -7,6 +7,7 @@ extern sys_call         ; The C function that sys_call_isr will call
 
 sys_call_isr:
     ; Push general-purpose and segment registers
+    push esp
     push ebp
     push edi
     push esi
@@ -44,6 +45,7 @@ sys_call_isr:
     pop esi
     pop edi
     pop ebp
+    add esp,4
 
 
     ; Return from ISR

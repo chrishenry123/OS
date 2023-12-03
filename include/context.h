@@ -7,7 +7,8 @@
 
 
 struct context {
-    unsigned int  ds, es, fs, gs, ss, eax, ebx, ecx, edx, esi, edi, ebp, esp, eip, cs, eflags;
+    int  ds, es, fs, gs, ss, eax, ebx, ecx, edx, esi, edi, ebp, esp,
+    eip, cs, eflags;
 };
 
 
