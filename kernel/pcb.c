@@ -24,8 +24,8 @@ struct pcb* pcb_allocate(void) {
         return NULL;
     }
 
-    memset(new_pcb->stack, 0, 2048);
-    new_pcb->stack_pointer = (void*)(new_pcb->stack + 2040 - sizeof(struct context));
+    memset(new_pcb->stack, 0, 6700);
+    new_pcb->stack_pointer = (void*)(new_pcb->stack + 6700 - sizeof(struct context));
     return new_pcb;
 }
 
@@ -58,7 +58,7 @@ struct pcb* pcb_setup(const char *name, int class, int priority) {
     new_pcb->priority = priority;
     new_pcb->exec_state = READY;
     new_pcb->disp_state = NOT_SUSPENDED;
-    new_pcb->stack_pointer = &new_pcb->stack[1020] - sizeof(struct context);
+    new_pcb->stack_pointer = &new_pcb->stack[6700] - sizeof(struct context);
     new_pcb->stack_pointer = (struct context *)new_pcb->stack_pointer;
     memset(new_pcb->stack_pointer, 0, sizeof(struct context));
 
